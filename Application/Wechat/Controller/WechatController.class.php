@@ -84,31 +84,28 @@ class WechatController extends Controller {
     }
     //根据Id获取openid
     protected function getOpenidById($id){
-        require_once(dirname(dirname(__FILE__)).'/controller/WechatUserController.php');
-        $wechat_user_controller=new WechatUserController();
+        $wechatUserModel=M('wechat_user');
         $result=array();
-        $user=$wechat_user_controller->find(array(),array('user_id'=>$id));
+        $user=$wechatUserModel->find(array('user_id'=>$id));
         if(!$user){
-            return  Wechat::$FAIL;
+            return  WechatController::$FAIL;
         }
-        $user=$user[0];
         return $user['openid'];
     }
 
     //根据自增id获取用户
     protected function getUsersByCourseid($course_id){
-        require_once(dirname(dirname(__FILE__)).'/controller/UserCourseRelationController2.php');
-        $relation=new UserCourseRelationController2();
-        require_once(dirname(dirname(__FILE__)).'/controller/UserController2.php');
-        $user=new UserController2();
-        $relations=$relation->find(array(),array('course_id'=>$course_id));
+        $relationModel=M('user_course_relation');
+        $userModel=M('user');
+
+        $relations=$relationModel->select(array('course_id'=>$course_id));
         $users=array();
         foreach($relations as $key=>$value){
-            $the_one=$user->find(array(),array('id'=>$value['user_id']));
+            $the_one=$userModel->find(array(),array('id'=>$value['user_id']));
             if(!$the_one){
                 continue;
             }
-            $users[]=$user->find(array(),array('id'=>$value['user_id']))[0];
+            $users[]=$userModel->find(array('id'=>$value['user_id']));
         }
         return $users;
     }
@@ -123,28 +120,25 @@ class WechatController extends Controller {
 
     //判断小测是否到时，1到时，-1未到时,0失败
     protected  function isTestOvertime($quiz_id){
-        require_once(dirname(dirname(__FILE__)).'/controller/QuizController.php');
-        $quiz_controller=new QuizController();
-        $quiz=$quiz_controller->find(array(),array('id'=>$quiz_id));
+        $quizModel=M('quiz');
+        $quiz=$quizModel->find(array(),array('id'=>$quiz_id));
         if(!$quiz){
-            return Wechat::$ERROR;
+            return WechatController::$ERROR;
         }
-        $quiz=$quiz[0];
         $endtime=strtotime($quiz['endtime']);
         if($endtime<=time()){
-            return Wechat::$OVERTIME;
+            return WechatController::$OVERTIME;
         }else{
-            return Wechat::$NOTOVERTIME;
+            return WechatController::$NOTOVERTIME;
         }
     }
 
     protected function clearQuizFromTemp($quiz_id){
-        require_once(dirname(dirname(__FILE__)).'/controller/QuizTempController.php');
-        $quiz_temp_controller=new  QuizTempController();
-        if($quiz_temp_controller->delete(array('quiz_id'=>$quiz_id))){
-            return Wechat::$SUCCESS;
+        $quizTempAnswerModel=M('quiz_temp_model');
+        if($quizTempAnswerModel->delete(array('quiz_id'=>$quiz_id))){
+            return WechatController::$SUCCESS;
         }else{
-            return Wechat::$FAIL;
+            return WechatController::$FAIL;
         }
 
     }
