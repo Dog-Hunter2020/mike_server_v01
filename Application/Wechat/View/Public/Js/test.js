@@ -35,7 +35,7 @@ function submit(){
 	}
 	// alert(type+open_id+identifyID+title+number+cao+duration);
 	cao = JSON.stringify(cao);
-	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {
+	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/multipleTest", {
 		action:"create_test", 
 		test_type:type, 
 		openid:open_id, 
@@ -45,7 +45,8 @@ function submit(){
 		option_count:number, 
 		test_content:cao, 
 		test_duration:duration}, function(data){
-			var json = eval('(' + data + ')'); 
+            //console.log(data);
+			var json = eval('(' + data + ')');
 			// alert(json.status);
 			if(json.status == 1){
 				document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">已成功创建小测</h3>');

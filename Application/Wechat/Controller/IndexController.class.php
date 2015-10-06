@@ -8,16 +8,17 @@ class IndexController extends Controller {
     private $TEST_STATUS_CLOSED=-1;
     private $TEST_STATUS_NOTEXIST=0;
     private $teacherCreateTestUrl,$teacherTestOnUrl,$teacherTestResultUrl;
-    private $keyTestResult='test_result',
+    private $keyTestResult='test_result';
 
-	public function __initialize(){
+
+	public function _initialize(){
         $this->wechatWebController=new WechatWebController();
 	}
 
 
     public function index(){
     	$this->assign('test','hehe');
-    	$this->display('/teacher_create_test/?s=/openID/123');
+    	$this->display('/teacher_create_test');
     }
 
     public function testForTeacher(){
@@ -37,6 +38,7 @@ class IndexController extends Controller {
     	//
     }
 
+
     public function testForStudent(){
 
     }
@@ -53,7 +55,34 @@ class IndexController extends Controller {
 
     }
 
-    public function announceForStudent(){
 
+
+
+    public function createOtherTest(){
+        echo I('courseId');
+    }
+
+    public function radioTest(){
+        $this->display('/radio_test');
+    }
+
+    public function createRadioTest(){
+        print_r($_POST);
+    }
+
+    public function multipleTest(){
+        $this->display('/radio_test');
+    }
+
+    public function createMultipleTest(){
+        print_r($_POST);
+    }
+
+    public function testResult(){
+        $this->display('/teacher_test_result');
+    }
+
+    public function getTestResult(){
+        print_r('234');
     }
 }
