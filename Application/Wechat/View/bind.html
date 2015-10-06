@@ -1,0 +1,46 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/> 
+	<script src="js/common.js" type="text/javascript"></script>
+	<script src="js/bind.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<style>
+	body {
+		
+	}
+
+	h3, form {
+		color:#60065a;
+		text-align: center;
+	}
+
+	input {
+		width: 60%;
+		height: auto;
+		font-size: 1.2em;
+		text-align: center;
+	}
+
+	.button {
+		background-color:#60065a;
+		color: white;
+		width: 60%;
+		height: auto;
+		border: solid;
+		border-radius: 5px;
+		font-size: 1.5em;
+	}
+	</style>
+</head>
+<body onload="init()">
+	<h3>请输入教务网账号和密码</h3>
+	<form action="http://112.124.101.41/test_server/bl/wechat_web_index2.php" method="post">
+		<p><input type="text" name="action" value="bind" style="display:none;"></p>
+		<p><input type="text" name="openid" value="" id="openId" style="display:none;"></p>
+		<p><input type="text" name="identify_id" placeholder="用户名"></p>
+		<p><input type="password" name="password" placeholder="密码"></p>
+		<p><input type="submit" class="button" value="绑定"></p>
+	</form>
+</body>
+</html>

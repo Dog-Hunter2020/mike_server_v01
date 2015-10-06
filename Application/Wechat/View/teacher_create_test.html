@@ -1,0 +1,193 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+	<title>创建小测</title>
+	<script src="JS/common.js" type="text/javascript"></script>
+	<script src="JS/jquery-1.9.1.min.js" type="text/javascript">
+	function checkTest(){
+		alert(open_id);
+		$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {action:'is_test_on', openid:open_id, identify:identifyID}, function(data){
+			var json = eval('(' + data + ')'); 
+			var status = json.status;
+			console.log(status);
+			switch(status){
+				case -1:
+			//关闭
+			window.location.href = "teacher_test_result.html?"+ "openID=" + QueryString('openID') + "&identify=" + identifyID;
+			break;
+			case 0:
+			//不存这个小测	
+			break;
+			case 1:
+			//小测进行中
+			window.location.href = "isTesting.html?"+ "openID=" + QueryString('openID') + "&identify=" + identifyID;
+			break;
+			default:
+			alert('未知错误');
+		}
+	});
+	}
+	function initCourseList(){
+	var isEnd = checkTest();
+	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {action:'get_courseList', openid:open_id}, function(data){
+		var json = eval('(' + data + ')'); 
+		if (json.status == 0) {
+			alert('获得课程列表失败');
+		}else{
+			courseList = json.courses;
+			var courses = "";
+			for (var i = 0; i < json.course_count; i++) {
+				var time_place = courseList[i].time_place;
+				var temp = time_place.split("||");
+				var time_places = " ";
+				for (var j = 0; j < temp.length; j++) {
+					time_places += temp[j].substring(0,temp[j].indexOf('节')+1);
+				};
+				courses += "<option value='" + courseList[i].id + "'>" + courseList[i].name + time_places + "</option>";
+				if (i == 0) {
+					id = courseList[i].id;
+				};
+			};
+			document.getElementById('course-list').innerHTML = courses;
+		};
+	});
+}
+
+function checkType(){
+	if (document.getElementById('radio_1').checked) {
+		document.getElementById('type1').style.display = "block";
+	}else {
+		document.getElementById('type1').style.display = "none";
+	};
+	if (document.getElementById('radio_2').checked) {
+		document.getElementById('type2').style.display = "block";
+	}else {
+		document.getElementById('type2').style.display = "none";
+	};
+	if (document.getElementById('radio_3').checked) {
+		document.getElementById('type3').style.display = "block";
+	}else {
+		document.getElementById('type3').style.display = "none";
+	};
+}
+
+
+function createTestRadio(value){
+	window.location.href = "radio_test.html?num=" + numOfOptions + "&title=" + document.getElementById('title').value + "&type=radio" + "&open_id=" + QueryString('openID') + "&duration=" + duration + "&course_id=" + id + "&random=" + identifyID;
+	// post('http://elearning2.sinaapp.com/index.php',{action:'creat_test'});
+}
+
+function createTestMultiple(){
+	window.location.href = "radio_test.html?num=" + numOfOptions + "&title=" + document.getElementById('title').value + "&type=multiple" + "&open_id=" + QueryString('openID') + "&duration=" + duration + "&course_id=" + id + "&random=" + identifyID;
+}
+
+function createTestOther(){
+	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {
+		action:'create_test',
+		test_type:'other',
+		course_id:id,
+		identify:identifyID,
+		openid:QueryString('openID'),
+		test_title:document.getElementById('title').value,
+		option_count:0,
+		test_duration:duration,
+		test_content:document.getElementById('other_type').value}, function(data){
+			var json = eval('(' + data + ')'); 
+			if(json.status == 1){
+				document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">已成功创建小测</h3>');
+			}
+		});
+}
+
+function changeAmount(num){
+	numOfOptions = num;
+}
+
+function changeDuration(value){
+	duration = value;
+}
+
+function changeCourse(course_id){
+	id = course_id;
+}
+	</script>
+	<script src="JS/create_test.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="CSS/bootstrap.min.css">
+	<style>
+	div {
+		margin: 20px;
+	}
+	.time {
+		color: blue;
+	}
+	</style>
+</head>
+<body onload="initCourseList()">
+	<div class="time">
+		时间:
+		<SCRIPT>
+		var d = new Date();
+		document.write(d.getFullYear() + "年" +(d.getMonth() + 1) + "月" + d.getDate() + "日 ");
+		document.write(' 星期'+'日一二三四五六'.charAt(new Date().getDay()) + '  ');
+		document.write(d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+		</SCRIPT>
+	</div>
+	<div>
+		选择课程：
+		<select name="course_list" id="course-list" onchange="changeCourse(this.value)">
+			
+		</select>
+	</div>
+	<div>
+		选择小测持续时间：
+		<select name="last-time" id="last-time" onchange="changeDuration(this.value)">
+			<option value="120" checked="checked">2分钟</option>
+			<option value="300">5分钟</option>
+			<option value="600">10分钟</option>
+			<option value="1800">30分钟</option>
+		</select>
+	</div>
+	<div id="type">
+		小测类型：
+		<label><input type="radio" name="test-type" value="radio" id="radio_1" onclick="checkType()"/>单选</label>
+		<label><input type="radio" name="test-type" value="multiple" id="radio_2" onclick="checkType()" />多选</label>
+		<label><input type="radio" name="test-type" value="other" id="radio_3" onclick="checkType()" />其他</label>
+	</div>
+	<div>
+		小测题目：
+		<input type="text" placeholder="题目" id="title"/>
+	</div>
+	<div id="type1" style="display:none;">
+		<p>
+			选项数量：
+			<select name="option_amount" id="radio_option_amount" onchange="changeAmount(this.value)">
+				<option value="1"> 1 </option>
+				<option value="2"> 2 </option>
+				<option value="3"> 3 </option>
+				<option value="4"> 4 </option>
+				<option value="5"> 5 </option>
+			</select>
+		</p>
+		<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestRadio('type1')">创建小测</button>
+	</div>
+	<div id="type2" style="display:none;">
+		<p>
+			选项数量：
+			<select name="option_amount" id="multiple_option_amount" onchange="changeAmount(this.value)">
+				<option value="1"> 1 </option>
+				<option value="2"> 2 </option>
+				<option value="3"> 3 </option>
+				<option value="4"> 4 </option>
+				<option value="5"> 5 </option>
+			</select>
+		</p>
+		<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestMultiple('type2')">创建小测</button>
+	</div>
+	<div id="type3" style="display:none;">
+		<textarea name="other_type" id="other_type" cols="40" rows="10"></textarea>
+		<br />
+		<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestOther()">创建小测</button>
+	</div>
+</body>
+</html>
