@@ -138,6 +138,14 @@ class IndexController extends Controller {
         $this->announceStudent($openid);
     }
 
+    public function announceSingleForStudent(){
+        $courseName=I('course_name');
+        $teacherName=I('teacher_name');
+        $posttime=I('posttime');
+        $content=I('content');
+        $this->singleAnnounce($courseName,$posttime,$teacherName,$content);
+    }
+
 
 
 //    这里是只需要跳转页面且需要传递参数的函数

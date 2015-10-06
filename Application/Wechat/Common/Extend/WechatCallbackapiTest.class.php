@@ -11,15 +11,15 @@ namespace Wechat\Common\Extend;
 define("TOKEN", "weixin");
 define("appid","wxcec023a0d89b6b96");
 define("appsecret","ed06183c78714989c4a8c2ee4ca84724");
-define("teacherURL","http://112.124.101.41/test_server/wechat_web/teacher_create_test.html");
-define("studentTestURL","http://112.124.101.41/test_server/wechat_web/test_detail.html");
-define("studentCountURL","http://112.124.101.41/test_server/wechat_web/roll_call.html");
-define("teacherCountURL","http://112.124.101.41/test_server/wechat_web/roll_call_teacher.html");
-define("bindURL","http://112.124.101.41/test_server/wechat_web/bind.html");
+define("teacherURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/testForTeacher");
+define("studentTestURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/testForStudent");
+define("studentCountURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/countForStudent");
+define("teacherCountURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/countForTeacher");
+define("bindURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/bind");
 define("indexURL","http://mp.weixin.qq.com/s?__biz=MzIzMDA2OTU5OQ==&mid=211605137&idx=1&sn=54c0a1014cf78c14ee1a3f00cebcb846#rd");
-define("announceTeacherURL","http://112.124.101.41/test_server/wechat_web/announce_teacher.html");
-define("announceStudentURL","http://112.124.101.41/test_server/wechat_web/announce_student.html");
-define('announceStudentPushURL','http://112.124.101.41/test_server/wechat_web/announce_single.html');
+define("announceTeacherURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/announceForTeacher");
+define("announceStudentURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/announceForStudent");
+define('announceStudentPushURL','http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/announceSingleForStudent');
 $wechatObj = new wechatCallbackapiTest();
 
 if(isset($_GET["echostr"])){
