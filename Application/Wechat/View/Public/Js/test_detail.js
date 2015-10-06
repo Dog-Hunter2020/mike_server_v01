@@ -6,30 +6,10 @@ var optionLength;
 var openID;
 var title;
 
-function isSubmit(){
-	quizID = QueryString('quiz_id');
-	openID = QueryString('openID');
-    $.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {action:'is_submitted', openid:openID, quiz_id:quizID}, function(data){
-		var json = eval('(' + data + ')'); 
-		var isSubmitted = json.status;
-		if (isSubmitted == 1) {
-			document.write("<h3 style='margin-top: 30px;text-align: center;width: 100%'>已提交小测,请勿重复提交！</h3>");
-			return;
-		}else if(isSubmitted == 0){
-            window.location.href="end_page.html";
-//			alert('小测已结束！');
-			return;
-		}else{
-            getTestDetail();
-            //window.location.href="submit_test.html";
-            return;
-        };
 
-	});
-}
 
 function getTestDetail(){
-	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {action:'get_test', openid:openID, quiz_id:quizID}, function(data){
+	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/getTestDetail", {action:'get_test', openid:openID, quiz_id:quizID}, function(data){
 		json_result = eval('(' + data + ')');
 		console.log(json_result);
 		if (json_result.status == 0) {
@@ -79,7 +59,7 @@ function submitAnswer(){
 		for (var i = 0; i < optionLength; i++) {
 			if(document.getElementById(i).checked){
 				isNull = false;
-				$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php",
+				$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/submitTest",
 					{'action':'submit_test', 
 					'openid':openID, 
 					'test_id':quizID, 
@@ -108,7 +88,7 @@ function submitAnswer(){
 			alert('请选择至少一个答案');
 		}else {
 			content = content.substring(0, content.length - 1);
-			$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", 
+			$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/submitTest", 
 				{'action':'submit_test', 
 				'openid':openID, 
 				'test_id':quizID, 
@@ -122,7 +102,7 @@ function submitAnswer(){
 		};
 		break;
 		case 'other':
-		$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", 
+		$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/submitTest", 
 			{'action':'submit_test', 
 			'openid':openID, 
 			'test_id':quizID, 
