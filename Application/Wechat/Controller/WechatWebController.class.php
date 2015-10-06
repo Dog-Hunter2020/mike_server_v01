@@ -472,4 +472,5 @@ class WechatWebController extends WechatController{
         }
         return $this->result_array;
     }
-} 
+
+}

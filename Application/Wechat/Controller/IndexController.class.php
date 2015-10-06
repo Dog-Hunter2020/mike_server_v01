@@ -7,39 +7,65 @@ class IndexController extends Controller {
     private $TEST_STATUS_ON=1;
     private $TEST_STATUS_CLOSED=-1;
     private $TEST_STATUS_NOTEXIST=0;
+
+    private $TEST_OVERTIME=1;
+    private $TEST_NOTOVERTIME=-1;
+
+    private $SUBMITTED=1;
+    private $UNSUBMITTED=-1;
+
     private $teacherCreateTestUrl,$teacherTestOnUrl,$teacherTestResultUrl;
     private $keyTestResult='test_result';
+    private $keyOpenId='openID';
+    private $keyQuizId='quizID';
+    private $keyIdentify='identify';
 
 
 	public function _initialize(){
         $this->wechatWebController=new WechatWebController();
 	}
 
-
+//逻辑判断和跳转
     public function testForTeacher(){
     	//判断小测是否进行中
-    	    $openid=I('openid');
-            $identify=I('identify');
-            $this->wechatWebController=new WechatWebController();
+    	    $openid=I($this->keyOpenId);
+            $identify=I($this->keyIdentify);
     		$testStatus=$this->wechatWebController->isTestOn($openid,$identify);
             switch($testStatus['status']){
                 case $this->TEST_STATUS_CLOSED:
-                    testResult();
+                    $this->testResult();
                     break;
                 case $this->TEST_STATUS_NOTEXIST:
-                    createTest();
+                    $this->createTest();
                     break;
                 case $this->TEST_STATUS_ON:
-                    testIsOn();
+                    $this->testIsOn();
                     break;
                 default:
                     $this->display("<h1>未知错误！</h1>");
+
             }
     }
 
 
     public function testForStudent(){
         //判断学生是否已经提交小测
+        $openid=I($this->keyOpenId);
+        $quizid=I($this->keyQuizId);
+        $this->wechatWebController=new WechatWebController();
+        $submitStatus=$this->wechatWebController->isSubmitted($openid,$quizid);
+        $testStatus=$this->wechatWebController->isTestOvertime($quizid);
+        switch($testStatus){
+            case $this->TEST_OVERTIME:
+
+        }
+
+
+        switch($submitStatus['status']){
+
+        }
+
+
     }
 
     public function countForTeacher(){
@@ -50,9 +76,27 @@ class IndexController extends Controller {
 //        判断学生是否已经点过名
     }
 
+    public function announceForTeacher(){
+
+    }
+
+    public function announceForStudent(){
+
+    }
+
+
+
 //    这里是只需要跳转页面且需要传递参数的函数
     public function bind(){
         $this->display('/bind');
+    }
+
+    public function studentTestClosed(){
+        $this->display('/end_page');
+    }
+
+    public function studentTestSubmitted(){
+        $this->show("<h style='text-align: center;margin-top: 10px'>已提交答案</h>");
     }
 
     public function createTest(){
@@ -83,8 +127,13 @@ class IndexController extends Controller {
         $this->display('/radio_test');
     }
 
-    public function testDetail(){
-//        学生跳转到小测详情
+    public function testDetail($openid,$quizid){
+//      学生跳转到小测详情
+        $result=array(
+            $this->keyOpenId=>$openid,
+            $this->keyQuizId=>$quizid
+        );
+        $this->assign($result);
         $this->display('/test_detail');
     }
 
