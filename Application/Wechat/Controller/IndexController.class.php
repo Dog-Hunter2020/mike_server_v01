@@ -33,16 +33,16 @@ class IndexController extends Controller {
     		$testStatus=$this->wechatWebController->isTestOn($openid,$identify);
             switch($testStatus['status']){
                 case $this->TEST_STATUS_CLOSED:
-                    $this->testResult();
+                    $this->testResult($openid,$identify);
                     break;
                 case $this->TEST_STATUS_NOTEXIST:
-                    $this->createTest();
+                    $this->createTest($openid,$identify);
                     break;
                 case $this->TEST_STATUS_ON:
-                    $this->testIsOn();
+                    $this->testIsOn($openid,$identify);
                     break;
                 default:
-                    $this->display("<h1>未知错误！</h1>");
+                    $this->error('操作失败，请稍候再试~');
 
             }
     }
@@ -57,31 +57,85 @@ class IndexController extends Controller {
         $testStatus=$this->wechatWebController->isTestOvertime($quizid);
         switch($testStatus){
             case $this->TEST_OVERTIME:
-
+                $this->studentTestClosed();
+                break;
+            case $this->TEST_NOTOVERTIME:
+                if($submitStatus['status']==$this->SUBMITTED){
+                    $this->studentTestSubmitted();
+                    break;
+                }elseif($submitStatus['status']=$this->UNSUBMITTED){
+                    $this->testDetail($openid,$quizid);
+                    break;
+                }else{
+                    $this->error('操作失败，请稍后再试~');
+                    break;
+                }
+            default:
+                $this->error('操作失败，请稍候再试~');
+                break;
         }
-
-
-        switch($submitStatus['status']){
-
-        }
-
 
     }
 
     public function countForTeacher(){
 //        判断点名是否进行中
+        $openid=I($this->keyOpenId);
+        $identify=I($this->keyIdentify);
+        $this->wechatWebController=new WechatWebController();
+        $testStatus=$this->wechatWebController->isTestOn($openid,$identify);
+        switch($testStatus['status']){
+            case $this->TEST_STATUS_CLOSED:
+                $this->rollCallResult($openid,$identify);
+                break;
+            case $this->TEST_STATUS_NOTEXIST:
+                $this->rollCall($openid,$identify);
+                break;
+            case $this->TEST_STATUS_ON:
+                $this->rollcallIsOn($openid,$identify);
+                break;
+            default:
+                $this->error('操作失败，请稍候再试~');
+
+        }
     }
 
     public function countForStudent(){
-//        判断学生是否已经点过名
+//      判断学生是否已经点过名
+        //判断学生是否已经提交小测
+        $openid=I($this->keyOpenId);
+        $quizid=I($this->keyQuizId);
+        $this->wechatWebController=new WechatWebController();
+        $submitStatus=$this->wechatWebController->isSubmitted($openid,$quizid);
+        $testStatus=$this->wechatWebController->isTestOvertime($quizid);
+        switch($testStatus){
+            case $this->TEST_OVERTIME:
+                $this->show("<h style='text-align: center;margin-top: 10px'>点名已结束</h>");
+                break;
+            case $this->TEST_NOTOVERTIME:
+                if($submitStatus['status']==$this->SUBMITTED){
+                    $this->show("<h style='text-align: center;margin-top: 10px'>已成功签到</h>");
+                    break;
+                }elseif($submitStatus['status']=$this->UNSUBMITTED){
+                    $this->rollCallDetail($openid,$quizid);
+                    break;
+                }else{
+                    $this->error('操作失败，请稍后再试~');
+                    break;
+                }
+            default:
+                $this->error('操作失败，请稍候再试~');
+                break;
+        }
     }
 
     public function announceForTeacher(){
-
+        $openid=I($this->keyOpenId);
+        $this->announceTeacher($openid);
     }
 
     public function announceForStudent(){
-
+        $openid=I($this->keyOpenId);
+        $this->announceStudent($openid);
     }
 
 
@@ -100,16 +154,16 @@ class IndexController extends Controller {
         $this->show("<h style='text-align: center;margin-top: 10px'>已提交答案</h>");
     }
 
-    public function createTest($openID, $quizID){
+    public function createTest($openID, $identify){
 //        跳转到创建小测
         $this->assign('openID',$openID);
-        $this->assign('quizID',$quizID);
+        $this->assign('quizID',$identify);
         $this->display('/teacher_create_test');
     }
-    public function testIsOn($openID, $quizID){
+    public function testIsOn($openID, $identify){
 //        正在进行
         $this->assign('openID',$openID);
-        $this->assign('quizID',$quizID);
+        $this->assign('quizID',$identify);
         $this->display('/isTesting');
     }
 
@@ -118,10 +172,10 @@ class IndexController extends Controller {
         $this->display('/radio_test');
     }
 
-    public function testResult($openID, $quizID){
+    public function testResult($openID, $identify){
 //        跳转到小测结果
         $this->assign('openID',$openID);
-        $this->assign('quizID',$quizID);
+        $this->assign('quizID',$identify);
         $this->display('/teacher_test_result');
     }
 
@@ -140,17 +194,24 @@ class IndexController extends Controller {
         $this->display('/test_detail');
     }
 
-    public function rollCall($openID, $quizID){
+    public function rollcallIsOn($openID, $identify){
+//        正在进行
+        $this->assign('openID',$openID);
+        $this->assign('quizID',$identify);
+        $this->display('/isCounting');
+    }
+
+    public function rollCall($openID, $identify){
 //        老师开始创建点名
         $this->assign('openID',$openID);
-        $this->assign('quizID',$quizID);
+        $this->assign('quizID',$identify);
         $this->display('roll_call_teacher');
     }
 
-    public function rollCallResult($openID, $quizID){
+    public function rollCallResult($openID, $identify){
 //        查看点名结果
         $this->assign('openID',$openID);
-        $this->assign('quizID',$quizID);
+        $this->assign('quizID',$identify);
         $this->display('roll_call_result');
     }
 
@@ -161,13 +222,13 @@ class IndexController extends Controller {
         $this->display('/roll_call');
     }
 
-    public function announceForTeacher($openID){
+    public function announceTeacher($openID){
 //        老师发布公告
         $this->assign('openID',$openID);
         $this->display('/announce_teacher');
     }
 
-    public function announceForStudent($openID){
+    public function announceStudent($openID){
 //        学生看公告
         $this->assign('openID',$openID);
         $this->display('/announce_student');
@@ -187,67 +248,101 @@ class IndexController extends Controller {
 //  这里是需要获得数据的函数
     public function getCourseList(){
 //        获得课程列表，传入openid
+        $this->wechatWebController=new WechatWebController();
         print_r(json_encode($this->wechatWebController->getCourseList(I('openid'))));
     }
 
     public function createOtherTest(){
 //        创建其他类型的小测，会传入参数
-        echo I('courseId');
+        $this->wechatWebController=new WechatWebController();
+        print_r(json_encode($this->wechatWebController->createTest($_POST['test_type'],$_POST['course_id'],$_POST['openid'],$_POST['test_title'],$_POST['option_count'],$_POST['test_duration'],$_POST['test_content'],$_POST['identify'])));
     }
 
     public function createRadioTest(){
 //        创建单选类型小测，会传入参数
-        print_r($_POST);
+        $this->wechatWebController=new WechatWebController();
+        print_r(json_encode($this->wechatWebController->createTest($_POST['test_type'],$_POST['course_id'],$_POST['openid'],$_POST['test_title'],$_POST['option_count'],$_POST['test_duration'],$_POST['test_content'],$_POST['identify'])));
     }
 
     public function createMultipleTest(){
 //        创建多选类型小测，会传入参数
-        print_r($_POST);
+        $this->wechatWebController=new WechatWebController();
+        print_r(json_encode($this->wechatWebController->createTest($_POST['test_type'],$_POST['course_id'],$_POST['openid'],$_POST['test_title'],$_POST['option_count'],$_POST['test_duration'],$_POST['test_content'],$_POST['identify'])));
     }
 
     public function getTestResult(){
 //        获得小测结果，会传入参数
-        print_r('234');
+        $this->wechatWebController=new WechatWebController();
+        print_r(json_encode($this->wechatWebController->getTestResult($_POST['openid'],$_POST['identify'])));
     }
 
     public function endTest(){
 //        结束小测，传入小测id
+        $this->wechatWebController=new WechatWebController();
+        print_r(json_encode($this->wechatWebController->endTest($_POST['identify'])));
     }
 
     public function getTestDetail(){
 //        学生获得小测详情，传入小测id
+        $this->wechatWebController=new WechatWebController();
+        print_r(json_encode($this->wechatWebController->getTestResult($_POST['openid'],$_POST['identify'])));
+
     }
 
     public function submitTest(){
 //        学生提交小测答案，会传入参数
+        $this->wechatWebController=new WechatWebController();
+        print_r(json_encode($this->wechatWebController->submitTest($_POST['test_id'],$_POST['submit_content'],$_POST['openid'])));
+
     }
 
     public function createRollCall(){
 //        老师创建点名
+        $this->wechatWebController=new WechatWebController();
+        print_r(json_encode($this->wechatWebController->beginCount($_POST['course_id'],$_POST['openid'],$_POST['location'],$_POST['duration'],$_POST['identify'])));
+
     }
 
     public function endRollCall(){
 //        老师结束点名
+        $this->wechatWebController=new WechatWebController();
+        print_r(json_encode($this->wechatWebController->endCount($_POST['openid'],$_POST['identify'])));
+
     }
 
     public function getRollCallResult(){
 //        获得点名结果
+        $this->wechatWebController=new WechatWebController();
+        print_r(json_encode($this->wechatWebController->getTestResult($_POST['openid'],$_POST['identify'])));
+
     }
 
     public function getRollCallDetail(){
 //        学生获得点名详情
+        $this->wechatWebController=new WechatWebController();
+        print_r(json_encode($this->wechatWebController->getTest($_POST['openid'],$_POST['quiz_id'])));
+
     }
 
     public function submitRollCall(){
 //        学生提交点名位置
+        $this->wechatWebController=new WechatWebController();
+        print_r(json_encode($this->wechatWebController->submitCount($_POST['count_id'],$_POST['location'],$_POST['openid'])));
+
     }
 
     public function createAnnounce(){
 //        老师发布公告
+        $this->wechatWebController=new WechatWebController();
+        print_r($this->wechatWebController->setAnnounce($_POST['openid'],$_POST['course_id'],$_POST['content']));
+
     }
 
     public function getAnnounces(){
 //        学生获得最近公告
+        $this->wechatWebController=new WechatWebController();
+        print_r($this->wechatWebController->getAnnounce($_POST['openid']));
+
     }
 
 //    获取数据函数End
