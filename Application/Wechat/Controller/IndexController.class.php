@@ -87,7 +87,8 @@ class IndexController extends Controller {
 
 
 //    这里是只需要跳转页面且需要传递参数的函数
-    public function bind(){
+    public function bind($openID){
+        $this->assign('openID',$openID);
         $this->display('/bind');
     }
 
@@ -99,16 +100,16 @@ class IndexController extends Controller {
         $this->show("<h style='text-align: center;margin-top: 10px'>已提交答案</h>");
     }
 
-    public function createTest(){
+    public function createTest($openID, $quizID){
 //        跳转到创建小测
-        $courselist=$this->wechatWebController->getCourseList();
-//        $this->assign('courselist',$courselist);
-        $this->assign('openID',I('openID'));
-        $this->assign('random',I('random'));
+        $this->assign('openID',$openID);
+        $this->assign('quizID',$quizID);
         $this->display('/teacher_create_test');
     }
-    public function testIsOn(){
+    public function testIsOn($openID, $quizID){
 //        正在进行
+        $this->assign('openID',$openID);
+        $this->assign('quizID',$quizID);
         $this->display('/isTesting');
     }
 
@@ -117,8 +118,10 @@ class IndexController extends Controller {
         $this->display('/radio_test');
     }
 
-    public function testResult(){
+    public function testResult($openID, $quizID){
 //        跳转到小测结果
+        $this->assign('openID',$openID);
+        $this->assign('quizID',$quizID);
         $this->display('/teacher_test_result');
     }
 
@@ -137,33 +140,45 @@ class IndexController extends Controller {
         $this->display('/test_detail');
     }
 
-    public function rollCall(){
+    public function rollCall($openID, $quizID){
 //        老师开始创建点名
+        $this->assign('openID',$openID);
+        $this->assign('quizID',$quizID);
         $this->display('roll_call_teacher');
     }
 
-    public function rollCallResult(){
+    public function rollCallResult($openID, $quizID){
 //        查看点名结果
+        $this->assign('openID',$openID);
+        $this->assign('quizID',$quizID);
         $this->display('roll_call_result');
     }
 
-    public function rollCallDetail(){
+    public function rollCallDetail($openID, $quizID){
 //        学生查看点名详情
+        $this->assign('openID',$openID);
+        $this->assign('quizID',$quizID);
         $this->display('/roll_call');
     }
 
-    public function announceForTeacher(){
+    public function announceForTeacher($openID){
 //        老师发布公告
+        $this->assign('openID',$openID);
         $this->display('/announce_teacher');
     }
 
-    public function announceForStudent(){
+    public function announceForStudent($openID){
 //        学生看公告
+        $this->assign('openID',$openID);
         $this->display('/announce_student');
     }
 
-    public function singleAnnounce(){
+    public function singleAnnounce($course_name, $posttime, $teacher_name, $content){
 //        单条公告
+        $this->assign('course_name',$course_name);
+        $this->assign('posttime',$posttime);
+        $this->assign('teacher_name',$teacher_name);
+        $this->assign('content',$content);
         $this->display('announce_single');
     }
 //    跳转函数End
