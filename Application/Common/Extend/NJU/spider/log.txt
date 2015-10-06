@@ -1,0 +1,70 @@
+
+
+
+<link href="css/student/elective/publicCourse.css" rel="stylesheet" type="text/css">
+
+<p>课程列表</p>
+<table id="tbCourseList">
+	<thead>
+		<tr>
+			<td>课程号</td>
+			<td>课程名</td>
+			<td>班级名</td>
+			<td>授课对象</td>
+			<td>上课时间地点</td>
+			<td>学生列表</td>
+			<td>打印预览</td>
+			<td>导出名单</td>
+			<td>教学周历</td>
+		</tr>
+	</thead>
+	<tbody>
+	
+	
+	
+		<tr>
+			<td>25000320</td>
+			<td>软件工程与计算 II</td>
+			<td>软件工程与计算 II(20151-25000320-1)</td>
+			<td>
+			
+				
+				
+				
+				
+					2014 软院-软件工程
+				
+			
+			</td>
+			<td>周三 第3-4节 仙Ⅱ-404&nbsp;1-18周<br/>周五 第5-6节 仙Ⅱ-404&nbsp;1-18周</td>
+			<td><a href="javascript:showStudent('64281')">查看</a></td>
+			<td><a href="teacher/courseinfo/courseList.do?method=printStudentList&classId=64281&courseNumber=25000320" target="_black">预览</a></td>
+			<td><a href="teacher/courseinfo/courseList.do?method=exportStudentList&classId=64281&courseNumber=25000320" target="_black">导出</a></td>
+			<td><a style="display:none;" href="teacher/courseinfo/courseList.do?method=getCourseScheduleList&classId=64281">编辑</a></td>
+		</tr>
+	
+	
+	
+		<tr>
+			<td>25000320</td>
+			<td>软件工程与计算 II</td>
+			<td>软件工程与计算 II(20151-25000320-2)</td>
+			<td>
+			
+				
+				
+				
+				
+					2014 软院-软件工程
+				
+			
+			</td>
+			<td>周三 第5-6节 仙Ⅱ-404&nbsp;1-18周<br/>周五 第3-4节 仙Ⅱ-304&nbsp;1-18周</td>
+			<td><a href="javascript:showStudent('64282')">查看</a></td>
+			<td><a href="teacher/courseinfo/courseList.do?method=printStudentList&classId=64282&courseNumber=25000320" target="_black">预览</a></td>
+			<td><a href="teacher/courseinfo/courseList.do?method=exportStudentList&classId=64282&courseNumber=25000320" target="_black">导出</a></td>
+			<td><a style="display:none;" href="teacher/courseinfo/courseList.do?method=getCourseScheduleList&classId=64282">编辑</a></td>
+		</tr>
+	
+	</tbody>
+</table>

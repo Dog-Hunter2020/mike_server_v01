@@ -64,6 +64,56 @@ class CourseController extends CommonController {
 
 	        return 1;
 	}
+
+    //重新导入课程
+    function importCourse($user_id,$identify_id,$password){
+
+        $spider=new \Common\Extend\NJU\spider\NJUSpider($identify_id,$password);
+        $userinfo=$spider->getUserinfo();
+        $courses=$spider->getCurrentCourses();
+
+        $courseArray=$spider->formatCourse($courses);
+        $length=sizeof($courseArray);
+        $courseModel=M('course');
+        $relationModel=M('user_course_relation');
+        for($i=0;$i<$length;$i++) {
+            //todo 添加课程的筛选条件待测试
+            $course_id=$courseArray[$i]['course_id'];
+            $cc=$courseModel->select(array("course_id"=>$course_id));
+            foreach($cc as $k=>$v){
+
+                //教师不同则定为不同的课
+                if(!(strpos($v['teacher'],$courseArray[$i]["teacher"])>=0)){
+                    unset($cc[$k]);
+                    continue;
+                }
+
+                if(!$this->isTheSameClassByTimePlace($courseArray[$i]['time_place'],$v['time_place'])){
+
+                    unset($cc[$k]);
+                }
+            }
+
+            if(!$cc){
+
+                $k = $courseModel->add($courseArray[$i]);
+                //说明是新课，需要添加地点和时间
+            }
+            else {
+                $k=$cc[0]['id'];
+            }
+            $root=0;
+            //如果是老师则root为1
+            if($userinfo->identify==1){
+                $root=1;
+            }
+
+            if(!$relationModel->find(array('user_id'=>$user_id,'course_id'=>$k))){
+                $relationModel->add(array('user_id'=>$user_id,'course_id'=>$k,'root'=>$root));
+            }
+        }
+
+    }
 }
 
 ?>

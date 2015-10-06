@@ -16,6 +16,25 @@ return array(
     'URL_HTML_SUFFIX'=>'',//U方法尾静态后缀
 
 
-    'DEFAULT_MODULE'        =>  'Wechat',
+    'DEFAULT_MODULE'=> 'Wechat',
+
+    'TABLE_CLASS_QUESTION'  => 'class_question',
+    'TABLE_COURSE'  => 'course',
+    'TABLE_COURSE_ATTENTION'  => 'course_attention',
+    'TABLE_COURSE_INFO'  => 'course_info',
+    'TABLE_COURSE_NOTICE'  => 'course_notice',
+    'TABLE_COURSE_RARY'  => 'course_rary',
+    'TABLE_DEPARTMENT'  => 'department',
+    'TABLE_MAJOR'  => 'major',
+    'TABLE_POST'  => 'post',
+    'TABLE_POST_ATTENTION'  => 'post_attention',
+    'TABLE_QUESTION_ANSWER'  => 'question_answer',
+    'TABLE_SCHOOL'  => 'school',
+    'TABLE_USER'=>'user',
+    'TABLE_USER_ATTENTION'=>'user_attention',
+
+    'DEFAULT_TIMEZONE'=>'Asia/Shanghai'
+
+
 
 );
