@@ -61,8 +61,8 @@ function submit(){
 }
 
 function initEndTest(){
-	open_id = QueryString('openID');
-	identifyID = QueryString('identify');
+	open_id = document.getElementById('openID').innerHTML;
+	identifyID = document.getElementById('quizID').innerHTML;
 }
 
 function endTest(){

@@ -9,6 +9,8 @@ var title;
 
 
 function getTestDetail(){
+	openID = document.getElementById('openID').innerHTML;
+	quizID = document.getElementById('quizID').innerHTML;
 	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/getTestDetail", {action:'get_test', openid:openID, quiz_id:quizID}, function(data){
 		json_result = eval('(' + data + ')');
 		console.log(json_result);

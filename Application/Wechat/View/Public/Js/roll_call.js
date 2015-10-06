@@ -3,8 +3,8 @@ var id;
 var myLocation="";
 
 function initRollCall(){
-	open_id = QueryString('openID');
-	id = QueryString('quiz_id');
+	open_id = document.getElementById('openID').innerHTML;
+	id = document.getElementById('quizID').innerHTML;
 	fastLocation();
 }
 

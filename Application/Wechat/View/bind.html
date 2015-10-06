@@ -35,8 +35,8 @@
 </head>
 <body onload="init()">
 	<h3>请输入教务网账号和密码</h3>
-	<form action="http://112.124.101.41/test_server/bl/wechat_web_index2.php" method="post">
-		<p><input type="text" name="action" value="bind" style="display:none;"></p>
+	<form action="http://localhost:3306/mike_server_v01/index.php/Wechat/Index/bind" method="post">
+		<p><input type="text" name="action" value="bind" style="display:none;">{$openID}</p>
 		<p><input type="text" name="openid" value="" id="openId" style="display:none;"></p>
 		<p><input type="text" name="identify_id" placeholder="用户名"></p>
 		<p><input type="password" name="password" placeholder="密码"></p>

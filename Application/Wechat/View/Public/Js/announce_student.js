@@ -1,6 +1,7 @@
-var open_id = QueryString('openID');
+var open_id;
 
 function initAnnounceList(){
+	open_id = document.getElementById('openID').innerHTML;
 	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/getAnnounces", {action:'get_announces',openid:open_id}, function(data){
 		// console.log(data);
 		var json = eval('(' + data + ')'); 
@@ -33,15 +34,4 @@ function createList(json){
 	"<tr><td class='klytd'>内容：</td><td class ='hvttd'>" + json.content + "</td></tr>"
 	"</table>";
 	return listStr;
-}
-
-function initSingleAnnounce(){
-	var course_name = QueryString('course_name');
-	var teacher_name = QueryString('teacher_name');
-	var content = QueryString('content');
-	var posttime = QueryString('posttime');
-	document.getElementById('course_name').innerHTML = course_name;
-	document.getElementById('teacher_name').innerHTML = teacher_name;
-	document.getElementById('content').innerHTML = content;
-	document.getElementById('posttime').innerHTML = posttime;
 }

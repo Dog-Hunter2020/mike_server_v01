@@ -1,8 +1,9 @@
 var courseList;
-var open_id = QueryString('openID');
+var open_id;
 var id;
 
 function initCourseList(){
+	open_id = document.getElementById('openID').innerHTML;
 	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/getCourseList", {action:'get_courseList', openid:open_id}, function(data){
 		var json = eval('(' + data + ')'); 
 		if (json.status == 0) {

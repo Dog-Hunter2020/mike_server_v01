@@ -7,11 +7,10 @@
 	<script src="JS/test_detail.js" type="text/javascript"></script>
 	<link rel="stylesheet" href="CSS/style.css">
 	<link rel="stylesheet" href="CSS/bootstrap.min.css">
-    <script>
-        $(document).ready(isSubmit());
-    </script>
 </head>
-<body onload="">
+<body onload="getTestDetail()">
+    <div id="openID" style="display: none">{$openID}</div>
+    <div id="random" style="display: none">{$random}</div>
     <div id="content">
         <h3 style="text-align:left;">小测题目:<span id="title"></span></span></h3>
         <form action="">

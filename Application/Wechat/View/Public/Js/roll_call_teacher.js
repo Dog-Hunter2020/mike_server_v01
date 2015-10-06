@@ -6,8 +6,8 @@ var identifyID;
 var myLocation = "";
 
 function initCourseList(){
-	open_id = QueryString('openID');
-	identifyID = QueryString('random');
+	open_id = document.getElementById('openID').innerHTML;
+	identifyID = document.getElementById('quizID').innerHTML;
 	getLocation();
 
 	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {action:'get_courseList', openid:open_id}, function(data){
@@ -62,8 +62,8 @@ function beginRollCall(){
 }
 
 function initEndCount(){
-	open_id = QueryString('openID');
-	identifyID = QueryString('identify');
+	open_id = document.getElementById('openID').innerHTML;
+	identifyID = document.getElementById('quizID').innerHTML;
 }
 
 function endCount(){
