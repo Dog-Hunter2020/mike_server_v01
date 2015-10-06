@@ -11,6 +11,12 @@ namespace Wechat\Controller;
 
 class AnnounceController extends CommonController{
 
+    function index(){
+        echo 123;
+        $model=D('Notice');
+        dump($model->getUserNoticeList(1));
+    }
+
     function announce($user_id,$course_id,$content){
 
         //TODO

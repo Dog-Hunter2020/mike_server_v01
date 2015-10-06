@@ -58,7 +58,7 @@ class IndexController extends Controller {
     public function createTest(){
 //        跳转到创建小测
         $courselist=$this->wechatWebController->getCourseList();
-        $this->assign('courselist',$courselist);
+//        $this->assign('courselist',$courselist);
         $this->display('/teacher_create_test');
     }
     public function testIsOn(){
@@ -121,6 +121,7 @@ class IndexController extends Controller {
 //  这里是需要获得数据的函数
     public function getCourseList(){
 //        获得课程列表，传入openid
+        print_r($this->wechatWebController->getCourseList(I('openid')));
     }
 
     public function createOtherTest(){
