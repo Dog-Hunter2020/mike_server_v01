@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+	<title>点名结果</title>
+	<link rel="stylesheet" href="style.css" type="text/css"></style>
+	<script src="JS/roll_call_result.js" type="text/javascript"></script>
+	<script src="JS/common.js" type="text/javascript"></script>
+	<script src="JS/jquery-1.9.1.min.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="CSS/bootstrap.min.css">
+</head>
+<body onload="initRollCallResult()">
+	<div id="openID">{$openID}</div>
+	<div id="quizID">{$quizID}</div>
+	<h2>点名结果</h2>
+	<table border="">
+		<tr>
+			<th>已到人数</th>
+			<td id="submitCount"></td>
+		</tr>
+		<tr>
+			<th>已到同学</th>
+			<td><label id="more_a" onclick="show('a','a')">+展开</label></td>
+		</tr>
+		<tr id="submitMore_a" style="display:none;">
+			<td id="submitMore_content" colspan="2">
+			</td>
+		</tr>
+		<tr>
+			<th>未到人数</th>
+			<td id="unSubmitCount"></td>
+		</tr>
+		<tr>
+			<th>未到同学</th>
+			<td><label id="more_b" onclick="show('b','b')">+展开</label></td>
+		</tr>
+		<tr id="submitMore_b" style="display:none;">
+			<td id="unSubmitMore_content" colspan="2">
+			</td>
+		</tr>
+	</table>
+</body>
+</html>
