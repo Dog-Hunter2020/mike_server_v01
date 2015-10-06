@@ -1,154 +1,86 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>创建小测</title>
 	<script src="JS/common.js" type="text/javascript"></script>
 	<script src="JS/jquery-1.9.1.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        var numOfOptions = 1;
-        var duration  = 120;
-        var courseList;
-        var open_id = 1234;
-        var id;
-        var identifyID = "fadsfas";
-        function checkType(){
-            if (document.getElementById('radio_1').checked) {
-                document.getElementById('type1').style.display = "block";
-            }else {
-                document.getElementById('type1').style.display = "none";
-            };
-            if (document.getElementById('radio_2').checked) {
-                document.getElementById('type2').style.display = "block";
-            }else {
-                document.getElementById('type2').style.display = "none";
-            };
-            if (document.getElementById('radio_3').checked) {
-                document.getElementById('type3').style.display = "block";
-            }else {
-                document.getElementById('type3').style.display = "none";
-            };
-        }
-
-
-        function createTestRadio(value){
-            window.location.href = "radioTest?num=" + numOfOptions + "&title=" + document.getElementById('title').value + "&type=radio" + "&open_id=" + QueryString('openID') + "&duration=" + duration + "&course_id=" + id + "&random=" + identifyID;
-            // post('http://elearning2.sinaapp.com/index.php',{action:'creat_test'});
-        }
-
-        function createTestMultiple(){
-//            window.location.href = "../radio_test.html?num=" + numOfOptions + "&title=" + document.getElementById('title').value + "&type=multiple" + "&open_id=" + QueryString('openID') + "&duration=" + duration + "&course_id=" + id + "&random=" + identifyID;
-            window.location.href = "multipleTest?openid=1234&num=" + numOfOptions + "&title=" + document.getElementById('title').value + "&type=multiple" + "&open_id=" + QueryString('openID') + "&duration=" + duration + "&course_id=" + id + "&random=" + identifyID;
-        }
-
-        function createTestOther(){
-            $.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/createOtherTest", {
-                action:'create_test',
-                test_type:'other',
-                course_id:id,
-                identify:identifyID,
-                openid:QueryString('openID'),
-                test_title:document.getElementById('title').value,
-                option_count:0,
-                test_duration:duration,
-                test_content:document.getElementById('other_type').value}, function(data){
-                var json = eval('(' + data + ')');
-                if(json.status == 1){
-                    document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">已成功创建小测</h3>');
-                }
-            });
-        }
-
-        function changeAmount(num){
-            numOfOptions = num;
-        }
-
-        function changeDuration(value){
-            duration = value;
-        }
-
-        function changeCourse(course_id){
-            id = course_id;
-        }
-    </script>
-<!-- <script src="JS/create_test.js" type="text/javascript"></script> -->
-<link rel="stylesheet" href="CSS/bootstrap.min.css">
-<style>
-div {
-	margin: 20px;
-}
-.time {
-	color: blue;
-}
-</style>
+	<script src="JS/create_test.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<style>
+		div {
+			margin: 20px;
+		}
+		.time {
+			color: blue;
+		}
+	</style>
 </head>
-<body>
-	<div class="time">
-		时间:{$courselist['status']}
-		<SCRIPT>
+<body onload="initCourseList()">
+<div class="time">
+	时间:
+	<SCRIPT>
 		var d = new Date();
 		document.write(d.getFullYear() + "年" +(d.getMonth() + 1) + "月" + d.getDate() + "日 ");
 		document.write(' 星期'+'日一二三四五六'.charAt(new Date().getDay()) + '  ');
 		document.write(d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
-		</SCRIPT>
-	</div>
-	<div>
-		选择课程：
-		<select name="course-list" id="course-list" onchange="changeCourse(this.value)">
-			<foreach name="courselist.courses" item="course">
-                <option value="{$course.id}">{$course.name}</option>
-			</foreach>
+	</SCRIPT>
+</div>
+<div>
+	选择课程：
+	<select name="course_list" id="course-list" onchange="changeCourse(this.value)">
+
+	</select>
+</div>
+<div>
+	选择小测持续时间：
+	<select name="last-time" id="last-time" onchange="changeDuration(this.value)">
+		<option value="120" checked="checked">2分钟</option>
+		<option value="300">5分钟</option>
+		<option value="600">10分钟</option>
+		<option value="1800">30分钟</option>
+	</select>
+</div>
+<div id="type">
+	小测类型：
+	<label><input type="radio" name="test-type" value="radio" id="radio_1" onclick="checkType()"/>单选</label>
+	<label><input type="radio" name="test-type" value="multiple" id="radio_2" onclick="checkType()" />多选</label>
+	<label><input type="radio" name="test-type" value="other" id="radio_3" onclick="checkType()" />其他</label>
+</div>
+<div>
+	小测题目：
+	<input type="text" placeholder="题目" id="title"/>
+</div>
+<div id="type1" style="display:none;">
+	<p>
+		选项数量：
+		<select name="option_amount" id="radio_option_amount" onchange="changeAmount(this.value)">
+			<option value="1"> 1 </option>
+			<option value="2"> 2 </option>
+			<option value="3"> 3 </option>
+			<option value="4"> 4 </option>
+			<option value="5"> 5 </option>
 		</select>
-	</div>
-	<div>
-		选择小测持续时间：
-		<select name="last-time" id="last-time" onchange="changeDuration(this.value)">
-			<option value="120" checked="checked">2分钟</option>
-			<option value="300">5分钟</option>
-			<option value="600">10分钟</option>
-			<option value="1800">30分钟</option>
+	</p>
+	<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestRadio('type1')">创建小测</button>
+</div>
+<div id="type2" style="display:none;">
+	<p>
+		选项数量：
+		<select name="option_amount" id="multiple_option_amount" onchange="changeAmount(this.value)">
+			<option value="1"> 1 </option>
+			<option value="2"> 2 </option>
+			<option value="3"> 3 </option>
+			<option value="4"> 4 </option>
+			<option value="5"> 5 </option>
 		</select>
-	</div>
-	<div id="type">
-		小测类型：
-		<label><input type="radio" name="test-type" value="radio" id="radio_1" onclick="checkType()"/>单选</label>
-		<label><input type="radio" name="test-type" value="multiple" id="radio_2" onclick="checkType()" />多选</label>
-		<label><input type="radio" name="test-type" value="other" id="radio_3" onclick="checkType()" />其他</label>
-	</div>
-	<div>
-		小测题目：
-		<input type="text" placeholder="题目" id="title"/>
-	</div>
-	<div id="type1" style="display:none;">
-		<p>
-			选项数量：
-			<select name="option_amount" id="radio_option_amount" onchange="changeAmount(this.value)">
-				<option value="1"> 1 </option>
-				<option value="2"> 2 </option>
-				<option value="3"> 3 </option>
-				<option value="4"> 4 </option>
-				<option value="5"> 5 </option>
-			</select>
-		</p>
-		<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestRadio('type1')">创建小测</button>
-	</div>
-	<div id="type2" style="display:none;">
-		<p>
-			选项数量：
-			<select name="option_amount" id="multiple_option_amount" onchange="changeAmount(this.value)">
-				<option value="1"> 1 </option>
-				<option value="2"> 2 </option>
-				<option value="3"> 3 </option>
-				<option value="4"> 4 </option>
-				<option value="5"> 5 </option>
-			</select>
-		</p>
-		<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestMultiple('type2')">创建小测</button>
-	</div>
-	<div id="type3" style="display:none;">
-		<textarea name="other_type" id="other_type" cols="40" rows="10"></textarea>
-		<br />
-		<a class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" href="{:U('Index/createOtherTest',array('openid'=>'1234','duration'=>120,'title'=>'test','content'=>'123','courseId'=>this.value))}">创建小测</a>
-	</div>
+	</p>
+	<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestMultiple('type2')">创建小测</button>
+</div>
+<div id="type3" style="display:none;">
+	<textarea name="other_type" id="other_type" cols="40" rows="10"></textarea>
+	<br />
+	<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestOther()">创建小测</button>
+</div>
 </body>
 </html>
