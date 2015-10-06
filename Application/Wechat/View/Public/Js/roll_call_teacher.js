@@ -5,33 +5,9 @@ var duration = 120;
 var identifyID;
 var myLocation = "";
 
-function checkTest(){
-	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {action:'is_test_on', openid:open_id, identify:identifyID}, function(data){
-		var json = eval('(' + data + ')'); 
-		var status = json.status;
-		console.log(status);
-		switch(status){
-			case -1:
-			//关闭
-			window.location.href = "roll_call_result.html?"+ "openID=" + QueryString('openID') + "&identify=" + identifyID;
-			break;
-			case 0:
-			//不存这个点名
-			break;
-			case 1:
-			//点名进行中
-			window.location.href = "isCounting.html?"+ "openID=" + QueryString('openID') + "&identify=" + identifyID;
-			break;
-			default:
-			alert('未知错误');
-		}
-	});
-}
-
 function initCourseList(){
 	open_id = QueryString('openID');
 	identifyID = QueryString('random');
-	checkTest();
 	getLocation();
 
 	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {action:'get_courseList', openid:open_id}, function(data){
@@ -74,7 +50,7 @@ function getSelectCourseID(){
 function beginRollCall(){
 	var courseId = getSelectCourseID();
 	//alert(myLocation + "");
-	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php",{action:'begin_count', 'course_id':courseId, 'openid':open_id, 'duration':duration, 'identify':identifyID, 'location':myLocation}, function(data){
+	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/createRollCall",{action:'begin_count', 'course_id':courseId, 'openid':open_id, 'duration':duration, 'identify':identifyID, 'location':myLocation}, function(data){
 
 		var json = eval('(' + data + ')');
 		if (json.status == 1) {
@@ -91,7 +67,7 @@ function initEndCount(){
 }
 
 function endCount(){
-	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {
+	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/endRollCall", {
 		action:"end_count", 
 		openid:open_id, 
 		identify:identifyID

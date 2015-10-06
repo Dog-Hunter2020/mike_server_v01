@@ -28,7 +28,7 @@ function showPosition(position) {
 var x = position.coords.latitude; 
 var y = position.coords.longitude;
 myLocation = x + ',' + y;
-$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php",{'action':'submit_count', 'openid':open_id, 'count_id':id, 'location':myLocation}, function(data){
+$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/submitRollCall",{'action':'submit_count', 'openid':open_id, 'count_id':id, 'location':myLocation}, function(data){
 	var json = eval('(' + data + ')'); 
 	if (json.status == 1) {
 		document.write("<h3 style='margin-top: 30px;text-align: center;width: 100%'>已成功提交位置</h3>");

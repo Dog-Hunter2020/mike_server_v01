@@ -1,7 +1,7 @@
 var open_id = QueryString('openID');
 
 function initAnnounceList(){
-	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {action:'get_announces',openid:open_id}, function(data){
+	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/getAnnounces", {action:'get_announces',openid:open_id}, function(data){
 		// console.log(data);
 		var json = eval('(' + data + ')'); 
 		if(json.status == 0){

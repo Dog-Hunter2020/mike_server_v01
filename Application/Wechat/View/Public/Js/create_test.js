@@ -5,33 +5,8 @@ var open_id = QueryString('openID');
 var id;
 var identifyID = QueryString('random');
 
-function checkTest(){
-	alert(open_id);
-	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {action:'is_test_on', openid:open_id, identify:identifyID}, function(data){
-		var json = eval('(' + data + ')'); 
-		var status = json.status;
-		console.log(status);
-		switch(status){
-			case -1:
-			//关闭
-			window.location.href = "teacher_test_result.html?"+ "openID=" + QueryString('openID') + "&identify=" + identifyID;
-			break;
-			case 0:
-			//不存这个小测	
-			break;
-			case 1:
-			//小测进行中
-			window.location.href = "isTesting.html?"+ "openID=" + QueryString('openID') + "&identify=" + identifyID;
-			break;
-			default:
-			alert('未知错误');
-		}
-	});
-}
-
 function initCourseList(){
-	var isEnd = checkTest();
-	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {action:'get_courseList', openid:open_id}, function(data){
+	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/getCourseList", {action:'get_courseList', openid:open_id}, function(data){
 		var json = eval('(' + data + ')'); 
 		if (json.status == 0) {
 			alert('获得课程列表失败');
@@ -75,16 +50,16 @@ function checkType(){
 
 
 function createTestRadio(value){
-	window.location.href = "radio_test.html?num=" + numOfOptions + "&title=" + document.getElementById('title').value + "&type=radio" + "&open_id=" + QueryString('openID') + "&duration=" + duration + "&course_id=" + id + "&random=" + identifyID;
+	window.location.href = "radioTest?num=" + numOfOptions + "&title=" + document.getElementById('title').value + "&type=radio" + "&open_id=" + QueryString('openID') + "&duration=" + duration + "&course_id=" + id + "&random=" + identifyID;
 	// post('http://elearning2.sinaapp.com/index.php',{action:'creat_test'});
 }
 
 function createTestMultiple(){
-	window.location.href = "radio_test.html?num=" + numOfOptions + "&title=" + document.getElementById('title').value + "&type=multiple" + "&open_id=" + QueryString('openID') + "&duration=" + duration + "&course_id=" + id + "&random=" + identifyID;
+	window.location.href = "multipleTest?num=" + numOfOptions + "&title=" + document.getElementById('title').value + "&type=multiple" + "&open_id=" + QueryString('openID') + "&duration=" + duration + "&course_id=" + id + "&random=" + identifyID;
 }
 
 function createTestOther(){
-	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {
+	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/createOtherTest", {
 		action:'create_test',
 		test_type:'other',
 		course_id:id,

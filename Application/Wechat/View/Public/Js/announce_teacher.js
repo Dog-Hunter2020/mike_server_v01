@@ -3,7 +3,7 @@ var open_id = QueryString('openID');
 var id;
 
 function initCourseList(){
-	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {action:'get_courseList', openid:open_id}, function(data){
+	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/getCourseList", {action:'get_courseList', openid:open_id}, function(data){
 		var json = eval('(' + data + ')'); 
 		if (json.status == 0) {
 			alert('获得课程列表失败');
@@ -35,7 +35,7 @@ function changeCourse(course_id){
 
 function createAnnounce(){
 	//alert(id + document.getElementById('announce_content').value);
-	$.post("http://112.124.101.41/test_server/bl/wechat_web_index2.php", {
+	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/createAnnounce", {
 		'action':'send_announce',
 		'openid':open_id,
 		'course_id':id,
