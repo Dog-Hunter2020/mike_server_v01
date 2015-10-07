@@ -5,8 +5,9 @@
 	<script src="JS/common.js" type="text/javascript"></script>
 	<script src="JS/jquery-1.9.1.min.js" type="text/javascript"></script>
 	<script src="JS/test_detail.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="CSS/bootstrap.min.css">
 	<link rel="stylesheet" href="CSS/style.css">
-	<link rel="stylesheet" href="CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="CSS/wow.css">
 </head>
 <body onload="getTestDetail()">
     <div id="openID" style="display: none">{$openID}</div>
@@ -17,7 +18,7 @@
             <div class="testDetail" id="testDetail">
             </div>
         </form>
-            <button type="button" class="btn btn-primary" style="width:100%;background-color:#60065a" value="提交" onclick="submitAnswer()">提交</button>
+        <button class="btn button-full" onclick="submitAnswer()">提交</button>
     </div>
 </body>
 </html>
