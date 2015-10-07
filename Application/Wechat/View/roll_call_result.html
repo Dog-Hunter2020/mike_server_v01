@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="CSS/bootstrap.min.css">
 	<link rel="stylesheet" href="CSS/style.css"></style>
 	<link rel="stylesheet" href="CSS/wow.css"></style>
+
 </head>
 <body onload="initRollCallResult()">
 	<div id="openID">{$openID}</div>
@@ -24,7 +25,7 @@
 		</tr>
 		<tr>
 			<th>已到同学</th>
-			<td><label id="more_a" onclick="show('a','a')">+展开</label></td>
+			<td><label class="more_label" id="more_a" onclick="show('a','a')">+展开</label></td>
 		</tr>
 		<tr id="submitMore_a" style="display:none;">
 			<td id="submitMore_content" colspan="2">
@@ -36,7 +37,7 @@
 		</tr>
 		<tr>
 			<th>未到同学</th>
-			<td><label id="more_b" onclick="show('b','b')">+展开</label></td>
+			<td><label class="more_label" id="more_b" onclick="show('b','b')">+展开</label></td>
 		</tr>
 		<tr id="submitMore_b" style="display:none;">
 			<td id="unSubmitMore_content" colspan="2">
