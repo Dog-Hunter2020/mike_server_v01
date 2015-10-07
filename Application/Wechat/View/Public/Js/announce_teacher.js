@@ -44,10 +44,7 @@ function createAnnounce(){
 	}, function(data){
 		console.log(data);
 		var json = eval('(' + data + ')'); 
-		if(json.status == 1){
-			document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">已成功发布公告！</h3>');
-		}else {
-			document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">发布公告失败，请检查是否已经发布此公告！</h3>')
-		}
-	});
+	}
+});
+	document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">已成功发布公告！</h3>');
 }

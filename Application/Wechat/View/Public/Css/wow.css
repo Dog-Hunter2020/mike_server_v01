@@ -1,4 +1,4 @@
-	h2 {
+	h2, h3 {
 		margin-top: 15px;
 		margin-bottom: 5px;
 		padding: 5px 0px;
@@ -6,7 +6,8 @@
 		color: #444;
 	}
 
-	.keleyitable table, td, th {  
+	.keleyitable table, td, th {
+		width: 100%;  
 		background-color: none;
 		margin-top:10px;  
 		text-align: left;
@@ -37,4 +38,19 @@
 	#content {
 		color: #444;
 		padding: 5px 10px;
+	}
+
+	.result_table {
+		padding: 5px;
+		background-color: #60065a;
+
+	}
+
+	.more_label {
+		color: #87a7e8;
+	}
+
+	.time {
+		border-bottom: 1px solid #444;
+		color: #444;
 	}
