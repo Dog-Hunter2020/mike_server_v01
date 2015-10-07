@@ -94,7 +94,19 @@ class CourseController extends \Think\Controller{
      */
 
     public function deleteCourse($id){
-
+        $FormCourseRary = M('course_rary');
+        $condition['course_id'] = $id;
+        $FormCourseRary->where($condition)->delete();
+        
+        $FormCourse = M('course');
+        $result = $FormCourse->delete($id);
+        $return = array();
+        if($result == false){
+            $return['result'] = false;
+        }else{
+            $return['result'] = true;
+        }
+        $this->ajaxReturn($return,'JSON');
     }
 
 
