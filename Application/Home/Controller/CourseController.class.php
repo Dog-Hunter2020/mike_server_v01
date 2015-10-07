@@ -128,15 +128,26 @@ class CourseController extends \Think\Controller{
     }
 
     /*
-     * description:获取某个学校的所有课程的简介信息
+     * description:获取某个学校的(beginPosition＋num)个课程的简介信息
      * return:List<CourseBriefInfos>
+     *
+     *
      *
      * CourseBriefInfos:
      *
      *courseId(String)	courseName(String)	academyName(String)	courseType(String)	teacherName(String)	courseImageUrl(String)
      *
      */
-    public function  getAllCourses($schoolId){
+    public function  getAllCourses($schoolId,$beginPosition, $num){
+
+    }
+
+    /*
+     * description:老师创建新的课程
+     * return:bool
+     */
+
+    public function createNewCourse($createTeacherId, $courseName, $courseBrief, $teachContent, $teacherIdList, $assistantIdList){
 
     }
 

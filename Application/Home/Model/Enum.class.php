@@ -1,6 +1,8 @@
 <?php
 
-abstract class Enum{
+ class Enum{
 
-    
+
+
+
 }
