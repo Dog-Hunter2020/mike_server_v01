@@ -24,12 +24,27 @@ class MessageController extends Controller
         $data = $PostModel->query("select count(*) as num from post where reply_to in (select id from post where user_id = %d)",array($userId));
         $result['num'] = $data[0]['num'];
         $this->ajaxReturn($result,'JSON');
-
     }
     public function getTotalPraiseNum($userId=0){
+        $PostModel = new Model();
+        $data = $PostModel->query("select SUM(like_count) as praise_num from post where user_id = %d",array($userId));
+        $result['num'] = $data[0]['praise_num'];
+        $this->ajaxReturn($result,'JSON');
+    }
+    //提到我的 可能要再建一张表
+    public function getTotalMentionMeNum($userId=0){
 
     }
-    public function getTotalMentionMeNum($userId=0){
+
+    //???
+    public function getLatestReplies($userId,$fromTime,$toTime){
+        $PostModel = new Model();
+        $data = $PostModel ->query("");
+
+    }
+
+    //
+    public function getLatestPraises(){
 
     }
 
