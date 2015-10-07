@@ -2,7 +2,7 @@ var open_id;
 
 function initAnnounceList(){
 	open_id = document.getElementById('openID').innerHTML;
-	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/getAnnounces", {action:'get_announces',openid:open_id}, function(data){
+	$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/getAnnounces", {action:'get_announces',openid:open_id}, function(data){
 		// console.log(data);
 		var json = eval('(' + data + ')'); 
 		if(json.status == 0){

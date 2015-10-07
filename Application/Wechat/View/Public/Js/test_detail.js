@@ -11,7 +11,7 @@ var title;
 function getTestDetail(){
 	openID = document.getElementById('openID').innerHTML;
 	quizID = document.getElementById('quizID').innerHTML;
-	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/getTestDetail", {action:'get_test', openid:openID, quiz_id:quizID}, function(data){
+	$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/getTestDetail", {action:'get_test', openid:openID, quiz_id:quizID}, function(data){
 		json_result = eval('(' + data + ')');
 		console.log(json_result);
 		if (json_result.status == 0) {
@@ -61,7 +61,7 @@ function submitAnswer(){
 		for (var i = 0; i < optionLength; i++) {
 			if(document.getElementById(i).checked){
 				isNull = false;
-				$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/submitTest",
+				$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/submitTest",
 					{'action':'submit_test', 
 					'openid':openID, 
 					'test_id':quizID, 
@@ -90,7 +90,7 @@ function submitAnswer(){
 			alert('请选择至少一个答案');
 		}else {
 			content = content.substring(0, content.length - 1);
-			$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/submitTest", 
+			$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/submitTest", 
 				{'action':'submit_test', 
 				'openid':openID, 
 				'test_id':quizID, 
@@ -104,7 +104,7 @@ function submitAnswer(){
 		};
 		break;
 		case 'other':
-		$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/submitTest", 
+		$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/submitTest", 
 			{'action':'submit_test', 
 			'openid':openID, 
 			'test_id':quizID, 

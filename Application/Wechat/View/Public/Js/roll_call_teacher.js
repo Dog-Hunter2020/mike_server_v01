@@ -50,7 +50,7 @@ function getSelectCourseID(){
 function beginRollCall(){
 	var courseId = getSelectCourseID();
 	//alert(myLocation + "");
-	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/createRollCall",{action:'begin_count', 'course_id':courseId, 'openid':open_id, 'duration':duration, 'identify':identifyID, 'location':myLocation}, function(data){
+	$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/createRollCall",{action:'begin_count', 'course_id':courseId, 'openid':open_id, 'duration':duration, 'identify':identifyID, 'location':myLocation}, function(data){
 
 		var json = eval('(' + data + ')');
 		if (json.status == 1) {
@@ -67,7 +67,7 @@ function initEndCount(){
 }
 
 function endCount(){
-	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/endRollCall", {
+	$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/endRollCall", {
 		action:"end_count", 
 		openid:open_id, 
 		identify:identifyID

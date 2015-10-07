@@ -4,7 +4,7 @@ var identify;
 function initRollCallResult(){
 	open_id = document.getElementById('openID').innerHTML;
 	identify = document.getElementById('identify').innerHTML;
-	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/getRollCallResult", {action:'get_test_result', openid:open_id, identify:identify}, function(data){
+	$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/getRollCallResult", {action:'get_test_result', openid:open_id, identify:identify}, function(data){
 		var json = eval('(' + data + ')'); 
 		console.log(json);
 		if (json.status == 0) {

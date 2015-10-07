@@ -35,7 +35,7 @@ function submit(){
 	}
 	// alert(type+open_id+identifyID+title+number+cao+duration);
 	cao = JSON.stringify(cao);
-	var server = "http://localhost:3306/mike_server_v01/index.php/Wechat/Index/";
+	var server = "http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/";
 	if (type == 'radio') {
 		server += "createRadioTest";
 	}else {
@@ -66,7 +66,7 @@ function initEndTest(){
 }
 
 function endTest(){
-	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/endTest", {
+	$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/endTest", {
 		action:"end_test", 
 		openid:open_id, 
 		identify:identifyID
