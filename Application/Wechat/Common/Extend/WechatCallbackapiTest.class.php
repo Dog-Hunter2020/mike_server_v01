@@ -5,9 +5,8 @@
  * Date: 15/10/6
  * Time: 下午1:00
  */
-
 namespace Wechat\Common\Extend;
-
+error_reporting(0);
 define("TOKEN", "weixin");
 define("appid","wxcec023a0d89b6b96");
 define("appsecret","ed06183c78714989c4a8c2ee4ca84724");
@@ -433,8 +432,8 @@ class wechatCallbackapiTest
                         }
                     }';
             $url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=$token";
-            $result = $this->https_post($url, $news);
-            var_dump($result);
+            $result = json_decode($this->https_post($url, $news));
+//            var_dump($result);
         }
     }
 

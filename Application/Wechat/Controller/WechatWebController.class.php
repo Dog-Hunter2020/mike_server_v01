@@ -412,15 +412,17 @@ class WechatWebController extends WechatController{
         if($course){
             $course_name=$course['name'];
         }
+
+        $user_id=$userinfo['id'];
+        $announceController=new AnnounceController();
+        $result=$announceController->announce($user_id,$course_id,$content);
         //群发
         $wechat_api=new \Wechat\Common\Extend\wechatCallbackapiTest();
         $wechat_api->sendMessages($openids,$course_name,$userinfo['name'],$content);
 
-        $user_id=$userinfo['id'];
-        $announceController=new AnnounceController();
-        return $announceController->announce($user_id,$course_id,$content);
+        return $result;
     }
-    // 获取公告，学生,已json化
+    // 获取公告，学生
     function getAnnounce($openid){
         $userinfo=$this->getUserinfoByOpenid($openid);
         if(!$userinfo){

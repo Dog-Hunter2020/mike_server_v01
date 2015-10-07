@@ -14,12 +14,21 @@ class IndexController extends Controller {
     private $SUBMITTED=1;
     private $UNSUBMITTED=-1;
 
+    private $END_PAGE_TYPE_NAME='type_name';
+
+    private $TEST='小测';
+    private $COUNT='点名';
+
+
     private $teacherCreateTestUrl,$teacherTestOnUrl,$teacherTestResultUrl;
     private $keyTestResult='test_result';
     private $keyOpenId='openID';
     private $keyQuizId='quizID';
     private $keyIdentify='identify';
 
+    public function index(){
+//        $this->error('已成功提交~');
+    }
 
 	public function _initialize(){
         $this->wechatWebController=new WechatWebController();
@@ -57,7 +66,8 @@ class IndexController extends Controller {
         $testStatus=$this->wechatWebController->isTestOvertime($quizid);
         switch($testStatus){
             case $this->TEST_OVERTIME:
-                $this->studentTestClosed();
+                $this->assign($this->END_PAGE_TYPE_NAME,$this->TEST);
+                $this->showEndPage();
                 break;
             case $this->TEST_NOTOVERTIME:
                 if($submitStatus['status']==$this->SUBMITTED){
@@ -109,7 +119,9 @@ class IndexController extends Controller {
         $testStatus=$this->wechatWebController->isTestOvertime($quizid);
         switch($testStatus){
             case $this->TEST_OVERTIME:
-                $this->show("<h style='text-align: center;margin-top: 10px'>点名已结束</h>");
+                $this->assign($this->END_PAGE_TYPE_NAME,$this->COUNT);
+                $this->showEndPage();
+//                $this->show("<h style='text-align: center;margin-top: 10px'>点名已结束</h>");
                 break;
             case $this->TEST_NOTOVERTIME:
                 if($submitStatus['status']==$this->SUBMITTED){
@@ -154,7 +166,7 @@ class IndexController extends Controller {
         $this->display('/bind');
     }
 
-    public function studentTestClosed(){
+    public function showEndPage(){
         $this->display('/end_page');
     }
 
