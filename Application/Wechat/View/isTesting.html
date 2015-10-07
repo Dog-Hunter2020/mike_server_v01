@@ -8,14 +8,18 @@
 	<script src="JS/test.js" type="text/javascript"></script>
 	<link rel="stylesheet" href="CSS/bootstrap.min.css">
 	<link rel="stylesheet" href="CSS/style.css">
+	<link rel="stylesheet" href="CSS/wow.css">
 </head>
 <body onload="initEndTest()">
 	<div id="openID" style="display:none;">{$openID}</div>
 	<div id="quizID" style="display:none;">{$quizID}</div>
-		<div class="x_ing">
+	<div class="x_ing">
 		<h3>小测正在进行中...</h3>
 		<img src="Public/img/b.gif">
 	</div>
-	<p class="endTest" style="text-align:center;"><input style="width:60%;height:40px;background-color:#60065a" type="button" class="btn btn-primary" value="结束小测" onclick="endTest()"/></p>
+	<div style="text-align:center;">
+		<br>
+		<buttton class="btn button-60" onclick="endTest()">结束小测</buttton>
+	</div>
 </body>
 </html>

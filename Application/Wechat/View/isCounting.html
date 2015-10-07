@@ -8,14 +8,18 @@
 	<script src="JS/roll_call_teacher.js" type="text/javascript"></script>
 	<link rel="stylesheet" href="CSS/bootstrap.min.css">
 	<link rel="stylesheet" href="CSS/style.css">
+	<link rel="stylesheet" href="CSS/wow.css">
 </head>
 <body onload="initEndCount()">
 	<div id="openID" style="display:none;">{$openID}</div>
 	<div id="quizID" style="display:none;">{$quizID}</div>
-		<div class="x_ing">
+	<div class="x_ing">
 		<h3>点名正在进行中...</h3>
 		<img src="Public/img/wait.gif">
 	</div>
-	<p class="endCount" style="text-align:center;"><input style="width:60%;height:40px;background-color:#60065a" type="button" class="btn btn-primary" value="结束点名" onclick="endCount()"/></p>
+	<div style="text-align:center;">
+		<br>
+		<button class="btn button-60" onclick="endCount()">结束点名</button>
+	</div>
 </body>
 </html>

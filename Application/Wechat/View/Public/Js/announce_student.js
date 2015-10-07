@@ -31,7 +31,7 @@ function createList(json){
 	"<tr><td class='klytd'>课程：</td><td class ='hvttd'>" + json.name + "</td></tr>" + 
 	"<tr><td class='klytd'>公告时间：</td><td class='hvttd'>" + json.posttime + "</td></tr>" +   
 	"<tr><td class='klytd'>发布人：</td><td class ='hvttd'>" + json.user_name + "</td></tr>" + 
-	"<tr><td class='klytd'>内容：</td><td class ='hvttd'>" + json.content + "</td></tr>"
+	"<tr><td class ='content_panel' colspan=2>" + json.content + "</td></tr>"
 	"</table>";
 	return listStr;
 }

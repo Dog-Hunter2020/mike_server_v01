@@ -6,6 +6,23 @@
 		color: #444;
 	}
 
+	h4 {
+		padding-bottom: 5px;
+		border-bottom: 1px solid #444;
+		color:#444;
+	}
+
+	h4, form {
+		text-align: center;
+	}
+
+	input {
+		width: 80%;
+		height: auto;
+		text-align: left;
+		padding-left: 5px;
+	}
+	
 	.keleyitable table, td, th {
 		width: 100%;  
 		background-color: none;
@@ -33,6 +50,7 @@
 
 	.content_panel {
 		background-color: white;
+		color: #444 !important;
 	}
 
 	#content {

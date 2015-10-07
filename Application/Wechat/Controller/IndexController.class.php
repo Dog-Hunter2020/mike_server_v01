@@ -160,7 +160,11 @@ class IndexController extends Controller {
     }
 
 
-
+    public function html(){
+        $str = "" + $_GET['test'] + "";
+        $this->display("/roll_call_result");
+        // echo $str;
+    }
 //    这里是只需要跳转页面且需要传递参数的函数
     public function bind($openID){
         $this->assign('openID',$openID);
