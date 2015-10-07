@@ -15,9 +15,29 @@ class CourseController extends \Think\Controller{
      * return: array()
      */
 
-    public function getCourseInfo($courseId){
+    public function getCourseInfo($courseId=0){
 
-        assert($courseId>0,"courseId error!");
+//        assert($courseId>0,"courseId error!");
+        $FormCourse = M('course');
+        $courseData = $FormCourse->find($courseId);
+
+        $FormCourseInfo = M('course_info');
+        $courseInfoData = $FormCourseInfo->find($courseData['course_info_id']);
+
+        $courseInfoData['courseId'] = $courseId;
+        $courseInfoData['semester'] = $courseData['semester'];
+        $courseInfoData['grade'] = $courseData['grade'];
+        $courseInfoData['time_place'] = $courseData['time_place'];
+
+        $FormRary = M('course_rary');
+        $condition['course_id'] = $courseId;
+        $courseRaryData = $FormRary->where($condition)->select();
+
+        foreach($courseRaryData as $courseRary){
+            $courseInfoData[$courseRary['field_name']] = $courseRary['field_content'];
+        }
+
+        $this->ajaxReturn($courseInfoData,'JSON');
 
 
 
