@@ -20,11 +20,21 @@ class CourseTeacherController extends \Think\Controller{
 
     }
 
-    public function addAssistant($courseId,$userId){
+    /*
+     * description:为某门课程添加助教
+     * return:bool
+     */
+    public function addAssistant($courseId,$userIdList){
 
     }
 
-    public function deleteAssistant($courseId,$userId){
+    /*
+     * description:为某门课程删除助教
+     * return:bool
+     *
+     */
+
+    public function deleteAssistant($courseId,$userName){
 
     }
 

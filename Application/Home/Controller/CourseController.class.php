@@ -13,11 +13,13 @@ class CourseController extends \Think\Controller{
     /*
      * description: 获取课程信息(用id精确查询)
      * return: array()
+     * courseId(String)	courseName(String)	courseType(String)	academyName(String)	teacherIds(List<String>)	teacherNames(List<String>)	annoucement(CourseAnnoucement)	currentStudents(int)	outline(String)	teachContent(String)	references(List<String>)	assistantIds(List<String>)	assistantNames(List<String>)
      */
 
-    public function getCourseInfo($courseId=0){
+    public function getCourseDetail($courseId=0){
 
 //        assert($courseId>0,"courseId error!");
+
         $FormCourse = M('course');
         $courseData = $FormCourse->find($courseId);
 
@@ -94,6 +96,9 @@ class CourseController extends \Think\Controller{
      */
 
     public function deleteCourse($id){
+
+
+
         $FormCourseRary = M('course_rary');
         $condition['course_id'] = $id;
         $FormCourseRary->where($condition)->delete();
@@ -108,14 +113,31 @@ class CourseController extends \Think\Controller{
         }
         $this->ajaxReturn($return,'JSON');
     }
+    /*
+     * description:获取user的课程的简介信息
+     * return:List<CourseBriefInfos>
+     *
+     * CourseBriefInfos:
+     *
+     *courseId(String)	courseName(String)	academyName(String)	courseType(String)	teacherName(String)	courseImageUrl(String)
+     *
+     */
 
+    public function  getMyCourseBriefInfos($studenId){
 
+    }
 
+    /*
+     * description:获取某个学校的所有课程的简介信息
+     * return:List<CourseBriefInfos>
+     *
+     * CourseBriefInfos:
+     *
+     *courseId(String)	courseName(String)	academyName(String)	courseType(String)	teacherName(String)	courseImageUrl(String)
+     *
+     */
+    public function  getAllCourses($schoolId){
 
-
-
-
-
-
+    }
 
 }
