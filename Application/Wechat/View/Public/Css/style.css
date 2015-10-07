@@ -11,9 +11,9 @@ body {
 	text-align:center;
 }
 
-
 h2, h3 {
 	text-align:center;
+	text-decoration: none;
 }
 
 table {
@@ -62,7 +62,8 @@ td label {
 }
 
 div {
-	margin: 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 div.x_ing {
@@ -71,6 +72,7 @@ div.x_ing {
 
 div.x_ing h3 {
 	margin-top: 30px;
+	border-bottom: none;
 }
 
 div.x_ing img {
@@ -100,4 +102,12 @@ div.x_ing img {
 	width: 60%;
 	margin-top: 10px;
 	color: white;
+}
+
+.left_align {
+	text-align: left;
+}
+
+#type label {
+	margin-right: 5px;
 }

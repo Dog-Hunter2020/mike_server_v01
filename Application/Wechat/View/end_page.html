@@ -8,22 +8,21 @@
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <!--<link rel="stylesheet" type="text/css" href="./css/quiz_base.css" />-->
     <title>课堂小测</title>
-    <style type="text/css">
-        #main h1 {
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="CSS/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="CSS/style.css">
 </head>
 
 <body>
 
-<div id="container">
+<div class="container" id="container">
     <div id="div1">
-        <div style="float: left">
-            <span style="color: #49b7e8; text-align: left;">2015-10-02</span>
-        </div>
-        <div style="float: right">
-            <span style="color: #000; text-align: right;">小测</span>
+        <div class="time">
+            <SCRIPT>
+                var d = new Date();
+                document.write(d.getFullYear() + "年" +(d.getMonth() + 1) + "月" + d.getDate() + "日 ");
+                document.write(' 星期'+'日一二三四五六'.charAt(new Date().getDay()) + '  ');
+                document.write(d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+            </SCRIPT>
         </div>
         <div style="clear: both; color: #000;"></div>
     </div>
@@ -38,8 +37,8 @@
                 <!--<h4>我的回答</h4><strong id="my_answer">answer</strong>-->
             <!--</div>-->
         <!--</div>-->
-        <div id="main">
-            <h1>{$type_name}已经结束</h1>
+        <div id="main" style="margin-top:40px;">
+            <h2>{$type_name}已经结束</h2>
         </div>
     </div>
 
