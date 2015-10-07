@@ -21,7 +21,7 @@ function init(){
 		form_content +=
 		"<div class='option'>" +
 		"<label for='A'>" + String.fromCharCode(65 +i) + ":</label>" +
-		"<input type='text' id='" + String.fromCharCode(65 +i) +"'>" +
+		"<input style='height: 25px; margin: 0px 5px; padding-left:5px;' type='text' id='" + String.fromCharCode(65 +i) +"'>" +
 		"</div>";
 	}
 	
