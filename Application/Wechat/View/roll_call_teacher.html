@@ -15,23 +15,25 @@
 <body onload="initCourseList()">
 	<div id="openID" style="display:none;">{$openID}</div>
 	<div id="quizID" style="display:none;">{$quizID}</div>
-	<h3>开启点名</h3>
-	<div>
-		选择课程：
-		<select name="course_list" id="course-list" onclick="changeCourse(this.value)">
-		</select>
-	</div>
-	<div>
-		选择点名持续时间：
-		<select name="course_list" id="course-list" onchange="changeDuration(this.value)">
-			<option value="120" checked="checked">2分钟</option>
-			<option value="300">5分钟</option>
-			<option value="600">10分钟</option>
-			<option value="1800">30分钟</option>
-		</select>
-	</div>
-	<div style="text-align:center;">
-		<button class="btn button-full" onclick="beginRollCall()">开始点名</button>
+	<div class="container">
+		<h3 class="left_align">开启点名</h3>
+		<div>
+			选择课程：
+			<select name="course_list" id="course-list" onclick="changeCourse(this.value)">
+			</select>
+		</div>
+		<div>
+			选择点名持续时间：
+			<select name="course_list" id="course-list" onchange="changeDuration(this.value)">
+				<option value="120" checked="checked">2分钟</option>
+				<option value="300">5分钟</option>
+				<option value="600">10分钟</option>
+				<option value="1800">30分钟</option>
+			</select>
+		</div>
+		<div style="text-align:center;">
+			<button class="btn button-full" onclick="beginRollCall()">开始点名</button>
+		</div>
 	</div>
 </body>
 </html>

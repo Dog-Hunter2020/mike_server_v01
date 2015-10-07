@@ -9,9 +9,9 @@
 	<link rel="stylesheet" href="CSS/wow.css">
 </head>
 <body onload="init()">
-	<div>
+	<div class="container">
 		<h4>请输入教务网账号和密码</h4>
-		<form action="http://localhost:3306/mike_server_v01/index.php/Wechat/Index/bind" method="post">
+		<form action="http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/register" method="post">
 			<p><input type="text" name="action" value="bind" style="display:none;"></p>
 			<p><input type="text" name="openid" value="{$openID}" id="openId" style="display:none;"></p>
 			<p><input type="text" name="identify_id" placeholder="学号/教职工号"></p>

@@ -9,7 +9,7 @@ function initCourseList(){
     open_id = document.getElementById('openID').innerHTML;
     identifyID = document.getElementById('random').innerHTML;
     console.log(open_id);
-	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/getCourseList", {action:'get_courseList', openid:open_id}, function(data){
+	$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/getCourseList", {action:'get_courseList', openid:open_id}, function(data){
         var json = eval('(' + data + ')');
 		if (json.status == 0) {
 			alert('获得课程列表失败');
@@ -62,7 +62,7 @@ function createTestMultiple(){
 }
 
 function createTestOther(){
-	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/createOtherTest", {
+	$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/createOtherTest", {
 		action:'create_test',
 		test_type:'other',
 		course_id:id,

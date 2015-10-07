@@ -12,70 +12,71 @@
 <body onload="initCourseList()">
 <div id="openID" style="display: none">{$openID}</div>
 <div id="random" style="display: none">{$random}</div>
-<div class="time">
-	时间:
-	<SCRIPT>
-		var d = new Date();
-		document.write(d.getFullYear() + "年" +(d.getMonth() + 1) + "月" + d.getDate() + "日 ");
-		document.write(' 星期'+'日一二三四五六'.charAt(new Date().getDay()) + '  ');
-		document.write(d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
-	</SCRIPT>
-</div>
-<div>
-	选择课程：
-	<select name="course_list" id="course-list" onchange="changeCourse(this.value)">
+<div class="container">
+	<div class="time">
+		<SCRIPT>
+			var d = new Date();
+			document.write(d.getFullYear() + "年" +(d.getMonth() + 1) + "月" + d.getDate() + "日 ");
+			document.write(' 星期'+'日一二三四五六'.charAt(new Date().getDay()) + '  ');
+			document.write(d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+		</SCRIPT>
+	</div>
+	<div>
+		选择课程：
+		<select name="course_list" id="course-list" onchange="changeCourse(this.value)">
 
-	</select>
-</div>
-<div>
-	选择小测持续时间：
-	<select name="last-time" id="last-time" onchange="changeDuration(this.value)">
-		<option value="120" checked="checked">2分钟</option>
-		<option value="300">5分钟</option>
-		<option value="600">10分钟</option>
-		<option value="1800">30分钟</option>
-	</select>
-</div>
-<div id="type">
-	小测类型：
-	<label><input type="radio" name="test-type" value="radio" id="radio_1" onclick="checkType()"/>单选</label>
-	<label><input type="radio" name="test-type" value="multiple" id="radio_2" onclick="checkType()" />多选</label>
-	<label><input type="radio" name="test-type" value="other" id="radio_3" onclick="checkType()" />其他</label>
-</div>
-<div>
-	小测题目：
-	<input type="text" placeholder="题目" id="title" style="width:70%"/>
-</div>
-<div id="type1" style="display:none;">
-	<p>
-		选项数量：
-		<select name="option_amount" id="radio_option_amount" onchange="changeAmount(this.value)">
-			<option value="1"> 1 </option>
-			<option value="2"> 2 </option>
-			<option value="3"> 3 </option>
-			<option value="4"> 4 </option>
-			<option value="5"> 5 </option>
 		</select>
-	</p>
-	<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestRadio('type1')">创建小测</button>
-</div>
-<div id="type2" style="display:none;">
-	<p>
-		选项数量：
-		<select name="option_amount" id="multiple_option_amount" onchange="changeAmount(this.value)">
-			<option value="1"> 1 </option>
-			<option value="2"> 2 </option>
-			<option value="3"> 3 </option>
-			<option value="4"> 4 </option>
-			<option value="5"> 5 </option>
+	</div>
+	<div>
+		选择小测持续时间：
+		<select name="last-time" id="last-time" onchange="changeDuration(this.value)">
+			<option value="120" checked="checked">2分钟</option>
+			<option value="300">5分钟</option>
+			<option value="600">10分钟</option>
+			<option value="1800">30分钟</option>
 		</select>
-	</p>
-	<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestMultiple('type2')">创建小测</button>
-</div>
-<div id="type3" style="display:none;">
-	<textarea name="other_type" id="other_type" cols="40" rows="10" style="width:100%;"></textarea>
-	<br />
-	<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestOther()">创建小测</button>
+	</div>
+	<div id="type">
+		小测类型：
+		<label><input type="radio" name="test-type" value="radio" id="radio_1" onclick="checkType()"/>单选</label>
+		<label><input type="radio" name="test-type" value="multiple" id="radio_2" onclick="checkType()" />多选</label>
+		<label><input type="radio" name="test-type" value="other" id="radio_3" onclick="checkType()" />其他</label>
+	</div>
+	<div>
+		小测题目：
+		<input type="text" placeholder="题目" id="title" style="width:70%"/>
+	</div>
+	<div id="type1" style="display:none;">
+		<p>
+			选项数量：
+			<select name="option_amount" id="radio_option_amount" onchange="changeAmount(this.value)">
+				<option value="1"> 1 </option>
+				<option value="2"> 2 </option>
+				<option value="3"> 3 </option>
+				<option value="4"> 4 </option>
+				<option value="5"> 5 </option>
+			</select>
+		</p>
+		<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestRadio('type1')">创建小测</button>
+	</div>
+	<div id="type2" style="display:none;">
+		<p>
+			选项数量：
+			<select name="option_amount" id="multiple_option_amount" onchange="changeAmount(this.value)">
+				<option value="1"> 1 </option>
+				<option value="2"> 2 </option>
+				<option value="3"> 3 </option>
+				<option value="4"> 4 </option>
+				<option value="5"> 5 </option>
+			</select>
+		</p>
+		<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestMultiple('type2')">创建小测</button>
+	</div>
+	<div id="type3" style="display:none;">
+		<textarea name="other_type" id="other_type" cols="40" rows="10" style="width:100%;"></textarea>
+		<br />
+		<button class="btn btn-primary" style="margin-top:5px;width:100%;background-color:#60065a" onclick="createTestOther()">创建小测</button>
+	</div>
 </div>
 </body>
 </html>

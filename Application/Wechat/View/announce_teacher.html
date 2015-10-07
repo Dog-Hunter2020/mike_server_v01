@@ -11,26 +11,28 @@
 	<link rel="stylesheet" href="CSS/wow.css">
 </head>
 <body onload="initCourseList()">
-	<div id="openID" style="display:none;">{$openID}</div>
-	<div class="time">
-		时间:
-		<SCRIPT>
-		var d = new Date();
-		document.write(d.getFullYear() + "年" +(d.getMonth() + 1) + "月" + d.getDate() + "日 ");
-		document.write(' 星期'+'日一二三四五六'.charAt(new Date().getDay()) + '  ');
-		document.write(d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
-		</SCRIPT>
-	</div>
-	<div>
-		选择课程：
-		<select name="course_list" class="'selectpicker" id="course-list" onchange="changeCourse(this.value)">
-			
-		</select>
-	</div>
-	<div id="announce">
-		<textarea name="announce" id="announce_content" cols="40" rows="10" style="width:100%;"></textarea>
-		<br />
-		<button class="btn button-full" onclick="createAnnounce()">发布公告</button>
+	<div class="container">
+		<div id="openID" style="display:none;">{$openID}</div>
+		<div class="time">
+			时间:
+			<SCRIPT>
+			var d = new Date();
+			document.write(d.getFullYear() + "年" +(d.getMonth() + 1) + "月" + d.getDate() + "日 ");
+			document.write(' 星期'+'日一二三四五六'.charAt(new Date().getDay()) + '  ');
+			document.write(d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+			</SCRIPT>
+		</div>
+		<div>
+			选择课程：
+			<select name="course_list" class="'selectpicker" id="course-list" onchange="changeCourse(this.value)">
+				
+			</select>
+		</div>
+		<div id="announce">
+			<textarea name="announce" id="announce_content" cols="40" rows="10" style="width:100%;"></textarea>
+			<br />
+			<button class="btn button-full" onclick="createAnnounce()">发布公告</button>
+		</div>
 	</div>
 </body>
 </html>
