@@ -1,0 +1,40 @@
+	h2 {
+		margin-top: 15px;
+		margin-bottom: 5px;
+		padding: 5px 0px;
+		border-bottom: 1px solid #444;
+		color: #444;
+	}
+
+	.keleyitable table, td, th {  
+		background-color: none;
+		margin-top:10px;  
+		text-align: left;
+	}  
+
+	.keleyitable td {
+		color: white;
+		font-family: "微软雅黑";
+		padding-left: 2px;
+	}
+
+	.keleyitable {
+		background-color: #60065a; //#87a7e8;
+		border-radius: 5px;
+	}
+
+	.klytd {
+		width:150px;
+	}  
+	.hvttd {  
+		width:500px
+	}  
+
+	.content_panel {
+		background-color: white;
+	}
+
+	#content {
+		color: #444;
+		padding: 5px 10px;
+	}

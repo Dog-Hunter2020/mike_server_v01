@@ -1,5 +1,6 @@
 body {
 	background-color:#fff;
+	font-family: Microsoft YaHei;
 }
 
 .option {
@@ -12,11 +13,7 @@ body {
 
 
 h2, h3 {
-	margin:10px;
 	text-align:center;
-	color: #60065a;
-	letter-spacing: 0;
-	text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 3px 0px #777
 }
 
 table {
@@ -56,4 +53,26 @@ td label {
 .button {
 	background-color:#60065a;
 	color: white;
+}
+
+.btn:hover {
+	color: white;
+}
+
+div {
+	margin: 20px;
+}
+
+div.x_ing {
+	text-align: center;
+}
+
+div.x_ing h3 {
+	margin-top: 30px;
+}
+
+div.x_ing img {
+	max-width: 180px;
+	margin-top: 30px;
+	margin-bottom: 30px;
 }

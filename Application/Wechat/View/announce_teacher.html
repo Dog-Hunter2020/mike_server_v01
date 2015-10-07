@@ -11,13 +11,19 @@
 	div {
 		margin: 20px;
 	}
+
+	textarea {
+		width: 100%;
+	}
+
 	.time {
-		color: blue;
+		border-bottom: 1px solid #444;
+		color: #444;
 	}
 	</style>
 </head>
 <body onload="initCourseList()">
-	<div id="openID">{$openID}</div>
+	<div id="openID" style="display:none;">{$openID}</div>
 	<div class="time">
 		时间:
 		<SCRIPT>

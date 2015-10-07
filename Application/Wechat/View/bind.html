@@ -5,42 +5,41 @@
 	<script src="JS/common.js" type="text/javascript"></script>
 	<script src="JS/bind.js" type="text/javascript"></script>
 	<link rel="stylesheet" href="CSS/bootstrap.min.css">
+	<link rel="stylesheet" href="CSS/style.css">
+	<link rel="stylesheet" href="CSS/wow.css">
 	<style>
 	body {
-		
+		font-family: Microsoft YaHei,'宋体';
 	}
 
-	h3, form {
-		color:#60065a;
+	h4 {
+		padding-bottom: 5px;
+		border-bottom: 1px solid #444;
+		color:#444;
+	}
+
+	h4, form {
 		text-align: center;
 	}
 
 	input {
-		width: 60%;
+		width: 80%;
 		height: auto;
-		font-size: 1.2em;
-		text-align: center;
-	}
-
-	.button {
-		background-color:#60065a;
-		color: white;
-		width: 60%;
-		height: auto;
-		border: solid;
-		border-radius: 5px;
-		font-size: 1.5em;
+		text-align: left;
+		padding-left: 5px;
 	}
 	</style>
 </head>
 <body onload="init()">
-	<h3>请输入教务网账号和密码</h3>
-	<form action="http://localhost:3306/mike_server_v01/index.php/Wechat/Index/bind" method="post">
-		<p><input type="text" name="action" value="bind" style="display:none;">{$openID}</p>
-		<p><input type="text" name="openid" value="" id="openId" style="display:none;"></p>
-		<p><input type="text" name="identify_id" placeholder="用户名"></p>
-		<p><input type="password" name="password" placeholder="密码"></p>
-		<p><input type="submit" class="button" value="绑定"></p>
-	</form>
+	<div>
+		<h4>请输入教务网账号和密码</h4>
+		<form action="http://localhost:3306/mike_server_v01/index.php/Wechat/Index/bind" method="post">
+			<p><input type="text" name="action" value="bind" style="display:none;"></p>
+			<p><input type="text" name="openid" value="{$openID}" id="openId" style="display:none;"></p>
+			<p><input type="text" name="identify_id" placeholder="学号/教职工号"></p>
+			<p><input type="password" name="password" placeholder="密码"></p>
+			<p><input type="submit" class="btn button" value="绑定"></p>
+		</form>
+	</div>
 </body>
 </html>
