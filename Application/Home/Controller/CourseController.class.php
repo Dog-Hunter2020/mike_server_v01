@@ -38,9 +38,6 @@ class CourseController extends \Think\Controller{
         }
 
         $this->ajaxReturn($courseInfoData,'JSON');
-
-
-
     }
     /*
      *description:更改课程的相关信息，信息种类在CourseInfoTypeEnum这个类中
