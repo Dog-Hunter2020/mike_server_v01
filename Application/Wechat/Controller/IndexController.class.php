@@ -27,7 +27,8 @@ class IndexController extends Controller {
     private $keyIdentify='identify';
 
     public function index(){
-//        $this->error('已成功提交~');
+//        $this->sucess('已成功提交~');
+        $this->error('操作失败，请稍候再试~');
     }
 
 	public function _initialize(){
