@@ -73,7 +73,7 @@ function endTest(){
 	}, function(data){
 		var json = eval('(' + data + ')');
 		if (json.status == 1) {
-			window.location.href = "teacher_test_result.html?"+ "openID=" + QueryString('openID') + "&identify=" + identifyID;
+			window.location.href = "testForTeacher?"+ "openID=" + open_id + "&random=" + identifyID;
 		};
 	});
 }

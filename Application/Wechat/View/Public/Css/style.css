@@ -111,3 +111,8 @@ div.x_ing img {
 #type label {
 	margin-right: 5px;
 }
+
+.width-inherit {
+	width: inherit;
+	text-align: left;
+}

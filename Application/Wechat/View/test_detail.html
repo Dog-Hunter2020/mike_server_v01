@@ -10,12 +10,13 @@
     <link rel="stylesheet" href="CSS/wow.css">
 </head>
 <body onload="getTestDetail()">
-    <div id="openID" style="display: none">{$openID}</div>
-    <div id="random" style="display: none">{$random}</div>
+    <div id="openID" style="display: none;">{$openID}</div>
+    <div id="quizID" style="display: none;">{$quizID}</div>
     <div id="content">
         <h3 class="left_align">小测题目:<span id="title"></span></span></h3>
         <form action="">
-            <div class="testDetail" id="testDetail">
+            <div class="testDetail width-inherit" id="testDetail">
+                <input type="radio" class="width-inherit">123
             </div>
         </form>
         <button class="btn button-full" onclick="submitAnswer()">提交</button>

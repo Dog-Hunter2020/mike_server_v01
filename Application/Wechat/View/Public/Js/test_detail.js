@@ -47,6 +47,8 @@ function getTestDetail(){
 			default:
 			detailStr="小测类型错误";
 		}
+		// console.log(testDetail);
+		// console.log(detailStr);
 		testDetail.innerHTML = detailStr;
 		document.getElementById('title').innerHTML = title;
 	});
@@ -67,9 +69,14 @@ function submitAnswer(){
 					'test_id':quizID, 
 					'submit_content':document.getElementById(i).value
 				}, function(data){
+					console.log(data);
 					var json = eval('(' + data + ')'); 
 					if(json.status == 1){
 						document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">已成功提交结果！</h3>');
+					}else if(json.status == 0){
+						document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">提交失败！</h3>');
+					}else {
+						alert("未知错误！请检查网络连接！");
 					}
 				});
 			};
@@ -99,6 +106,10 @@ function submitAnswer(){
 				var json = eval('(' + data + ')'); 
 				if(json.status == 1){
 					document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">已成功提交结果！</h3>');
+				}else if(json.status == 0){
+					document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">提交失败！</h3>');
+				}else {
+					alert("未知错误！请检查网络连接！");
 				}
 			});
 		};
@@ -113,6 +124,10 @@ function submitAnswer(){
 			var json = eval('(' + data + ')'); 
 			if(json.status == 1){
 				document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">已成功提交结果！</h3>');
+			}else if(json.status == 0){
+				document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">提交失败！</h3>');
+			}else {
+				alert("未知错误！请检查网络连接！");
 			}
 		});
 		break;
