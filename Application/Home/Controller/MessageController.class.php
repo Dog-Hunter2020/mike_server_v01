@@ -79,27 +79,75 @@ class MessageController extends Controller
     }
 
     public function getNextReplies($userId,$index,$num){
-
+        $PostModel = new Model();
+        $data = $PostModel->query("select user_id, `timestamp`, reply_to from post where reply_to in (select id from post where user_id = %d ) order by id DESC LIMIT %d,%d",array($userId,$index,$num));
+        $data = $this->handleReplyData($data);
+        $this->ajaxReturn($data,'JSON');
     }
     //
     public function getLatestReplies($userId,$fromTime,$toTime){
         $PostModel = new Model();
-        $data = $PostModel ->query("");
+        $data = $PostModel ->query("select user_id, `timestamp`, reply_to from post where reply_to in (select id from post where user_id = %d ) and `timestamp` BETWEEN '%s' and '%s' ORDER BY id DESC ",array($userId,$fromTime,$toTime));
+        $data = $this->handleReplyData($data);
+        $this->ajaxReturn($data,'JSON');
+    }
+    private function handleReplyData($Data){
+        for($i=0;$i<count($Data);$i++){
+            $user_id = $Data[$i]['user_id'];
+            $UserModel = M("user");
+            $userData = $UserModel->find($user_id);
+            $Data[$i]['user_name'] = $userData['nick_name'];
+            $PostModel = M('post');
+            $postData = $PostModel->find($Data[$i]['reply_to']);
+            $Data[$i]['content'] = $postData['content'];
+        }
+        return $Data;
 
     }
 
     public function getNextPraises($userId,$index,$num){
-
+        $data = $this->getNextInteractData($userId,$index,$num,'PRAISE');
+        $data = $this->handleInteractData($data);
+        $this->ajaxReturn($data,'JSON');
     }
     //
     public function getLatestPraises($userId,$fromTime,$toTime){
-
+        $data = $this->getLatestInteractData($userId,$fromTime,$toTime,'PRAISE');
+        $data = $this->handleInteractData($data);
+        $this->ajaxReturn($data,'JSON');
+    }
+    private function handleInteractData($data){
+        for($i=0;$i<count($data);$i++){
+            $sender_id = $data[$i]['sender_id'];
+            $object_id = $data[$i]['object_id'];
+            $UserModel = M('user');
+            $UserData = $UserModel->find($sender_id);
+            $data[$i]['sender_name'] = $UserData['nick_name'];
+            $PostModel = M('post');
+            $postData = $PostModel->find($object_id);
+            $data[$i]['post_content'] = $postData['content'];
+        }
+        return $data;
     }
     public function getNextMentionMes($userId,$index,$num){
-
+        $data = $this->getNextInteractData($userId,$index,$num,'POST');
+        $data = $this->handleInteractData($data);
+        $this->ajaxReturn($data,'JSON');
     }
     public function getLatestMentionMes($userId,$fromTime,$toTime){
-
+        $data = $this->getLatestInteractData($userId,$fromTime,$toTime,'POST');
+        $data = $this->handleInteractData($data);
+        $this->ajaxReturn($data,'JSON');
+    }
+    private function getNextInteractData($userId,$index,$num,$type){
+        $InteractModel = new Model();
+        $data = $InteractModel->query("select sender_id, time, object_id from interact where receiver_id = %d and type='%s' order by id DESC LIMIT %d,%d",array($userId,$type,$index,$num));
+        return $data;
+    }
+    private function getLatestInteractData($userId,$fromTime,$toTime,$type){
+        $InteractModel = new Model();
+        $data = $InteractModel->query("select sender_id, time, object_id from interact where receiver_id = %d and type='%s' AND TIME BETWEEN '%s' and '%s' order by id DESC",array($userId,$type,$fromTime,$toTime));
+        return $data;
     }
 
 }
