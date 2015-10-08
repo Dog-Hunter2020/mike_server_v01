@@ -278,7 +278,7 @@ class NJUSpider extends CurlSpider{
         $selections=$this->getAllcoursesSelections();
         //组合学期，年级，院系三个筛选条件形成网页
         $i=0;
-        $courseController=new CourseController2();
+
         foreach($selections['termList'] as $term){
             //只扒取当前学期
             if($term==CommonConfig::$LAST_TERM){
