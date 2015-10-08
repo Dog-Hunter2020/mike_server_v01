@@ -8,6 +8,8 @@
  */
 namespace Home\Controller;
 use Think\Controller;
+use Think\Model;
+
 class CourseController extends \Think\Controller{
 
     /*
@@ -26,30 +28,31 @@ class CourseController extends \Think\Controller{
         $FormCourseInfo = M('course_info');
         $courseInfoData = $FormCourseInfo->find($courseData['course_info_id']);
 
-        $courseInfoData['courseId'] = $courseId;
+        $courseInfoData['course_id'] = $courseId;
         $courseInfoData['semester'] = $courseData['semester'];
         $courseInfoData['grade'] = $courseData['grade'];
         $courseInfoData['time_place'] = $courseData['time_place'];
 
+        $courseInfoData = $this->raryCourseInfo($courseInfoData);
+
+        $this->ajaxReturn($courseInfoData,'JSON');
+    }
+    private function raryCourseInfo($courseInfo){
         $FormRary = M('course_rary');
-        $condition['course_id'] = $courseId;
+        $condition['course_id'] = $courseInfo['course_id'];
         $courseRaryData = $FormRary->where($condition)->select();
 
         foreach($courseRaryData as $courseRary){
             $courseInfoData[$courseRary['field_name']] = $courseRary['field_content'];
         }
-
-        $this->ajaxReturn($courseInfoData,'JSON');
+        return $courseInfo;
     }
     /*
      *description:更改课程的相关信息，信息种类在CourseInfoTypeEnum这个类中
      *return: bool
      *
      */
-    public function setCourseInfo($courseId,$type,$content){
-
-        assert($courseId!=-1,"courseId error!");
-        assert($content!=null,"course info can not be null!");
+    public function setCourseInfo($courseId,$changes){
 
 
 
@@ -58,10 +61,49 @@ class CourseController extends \Think\Controller{
      * description:利用课程信息进行模糊查询
      * process:先模糊查询出ID list 再用id精确查询
      * return:array()
-     *
+     *目前只是利用name进行查询
      */
 
-    public function getCoursesByInfo(){
+    public function getCoursesByInfo($key){
+        $CourseNameData = $this->search('name',$key);
+        $this->ajaxReturn($CourseNameData,'JSON');
+
+    }
+
+    private function search($field_name,$key){
+        $result = array();
+        $CourseInfoModel = M('course_info');
+        $map[$field_name] = array('like','%'.$key.'%');
+        $CoursesData = $CourseInfoModel->where($map)->select();
+        $CourseModel = M('course');
+        $CourseRaryModel = M('course_rary');
+        for($i=0;$i<count($CoursesData);$i++){
+            $course_info_id = $CoursesData[$i]['id'];
+            $field_content = $CoursesData[$i][$field_name];
+            $condition['course_info_id'] = $course_info_id;
+            $candidate_courses = $CourseModel->where($condition)->select();
+            for($j=0;$j<count($candidate_courses);$j++){
+                $condition1['course_id'] = $candidate_courses[$j]['id'];
+                $condition1['field_name'] = $field_name;
+                $courseRaryData = $CourseRaryModel->where($condition1)->select();
+                if(count($courseRaryData) == 0){
+                    $result[] = array($candidate_courses[$j]['id'] => $field_content);
+                }else{
+                    if(strstr($courseRaryData[0]['field_content'],$key)){
+                        $result[] = array($candidate_courses[$j]['id'] => $field_content);
+                    }
+                }
+            }
+        }
+        $condition2['field_name'] = $field_name;
+        $condition2['field_content'] = array('like','%'.$key.'%');
+        $courseRaryData = $CourseRaryModel->where($condition2)->select();
+        for($i=0;$i<count($courseRaryData);$i++){
+            if(!array_key_exists($courseRaryData[$i]['course_id'])){
+                $result[] = array($courseRaryData[$i]['course_id'] => $courseRaryData[$i]['field_content']);
+            }
+        }
+        $this->ajaxReturn($result,'JSON');
 
     }
     /*
@@ -70,6 +112,8 @@ class CourseController extends \Think\Controller{
      */
 
     public function getCourseTableFields(){
+        $fields = array('课程名称','课程内容','课程介绍','参考资料','上课时间地点','上课年级','课程学期');
+        $this->ajaxReturn($fields,'JSON');
 
     }
     /*
@@ -80,7 +124,7 @@ class CourseController extends \Think\Controller{
 
     public function getCourseInfoRange($startId,$number){
 
-        assert($startId>0&&$number>0,"startId or number error");
+//        assert($startId>0&&$number>0,"startId or number error");
 
     }
     /*
