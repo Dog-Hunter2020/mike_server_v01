@@ -38,12 +38,17 @@ class PostController extends Controller{
 
 
 
+
+
     public function updatePostInfo($postId,$postInfoType,$postInfo){
 
     }
     /*
      * description:邀请一些用户来回答某个问题
      * return:bool
+     *
+     * 这里涉及到推送信息
+     *
      */
 
     public function invitateUserToAnswer($questionId,$userIdList){
@@ -87,6 +92,25 @@ class PostController extends Controller{
      */
 
     public function getPostReplys($postId){
+
+    }
+
+    /*
+     * description:获取某个post的详细信息
+     * return:postInfo postInfo的定义参考postNewQuestion
+     */
+    public function getPost($postId){
+
+    }
+
+    /*
+     * description:根据用户输入的信息查找相关的帖子
+     * return:List<postInfo> postInfo的定义参考postNewQuestion
+     *
+     * $inContent  是否在内容中进行搜索，默认为是
+     */
+
+    public function searchPost($info,$inContent=1){
 
     }
 

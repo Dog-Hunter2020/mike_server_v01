@@ -74,9 +74,9 @@ class UserController extends \Think\Controller{
      * $userInfo
      *
      *String name,String icon,String schoolName,String departmentName,
-     * String nick_name,St ring identify,String gender,
+     * String nick_name,String identify,String gender,
      * String grade,String sign,String background_i con_path,
-     * String id
+     * String id,String schoolaccount,String schoolAccountPsd
      *
      */
     public function addNewUser($userInfo){
@@ -116,7 +116,7 @@ class UserController extends \Think\Controller{
     }
 
     /*
-     * description:用户注册
+     * description:用户注册，没有schoolAccount的时候不用爬课程
      * return:user(和getUser方法里面的user结构一样)
      * userInfo和addNewUser一样
      *
