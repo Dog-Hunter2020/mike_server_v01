@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!--<link rel="stylesheet" type="text/css" href="./css/quiz_base.css" />-->
+    <title>课堂小测</title>
+    <link rel="stylesheet" href="CSS/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="CSS/style.css">
+</head>
+
+<body>
+
+<div class="container" id="container">
+    <div id="div1">
+        <div class="time">
+            <SCRIPT>
+                var d = new Date();
+                document.write(d.getFullYear() + "年" +(d.getMonth() + 1) + "月" + d.getDate() + "日 ");
+                document.write(' 星期'+'日一二三四五六'.charAt(new Date().getDay()) + '  ');
+                document.write(d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+            </SCRIPT>
+        </div>
+        <div style="clear: both; color: #000;"></div>
+    </div>
+    <div id="div2">
+        <!--<div id="test">-->
+        <!--<div id="div_title">-->
+        <!--<h4>小测标题</h4><strong id="test_title">title</strong>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--<div id="answer">-->
+        <!--<div id="div_my_answer">-->
+        <!--<h4>我的回答</h4><strong id="my_answer">answer</strong>-->
+        <!--</div>-->
+        <!--</div>-->
+        <div id="main" style="margin-top:40px;">
+            <h2>{$action}成功</h2>
+        </div>
+    </div>
+
+</div>
+</body>
+
+</html>

@@ -36,7 +36,7 @@ function changeCourse(course_id){
 
 function createAnnounce(){
 	//alert(id + document.getElementById('announce_content').value);
-	$.post("http://localhost:3306/mike_server_v01/index.php/Wechat/Index/createAnnounce", {
+	$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/createAnnounce", {
 		'action':'send_announce',
 		'openid':open_id,
 		'course_id':id,
@@ -45,6 +45,6 @@ function createAnnounce(){
 		console.log(data);
 		var json = eval('(' + data + ')'); 
 	}
-});
+    );
 	document.write('<h3 style="margin-top: 30px;text-align: center;width: 100%">已成功发布公告！</h3>');
 }

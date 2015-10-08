@@ -3,10 +3,9 @@ var identify;
 
 function initRollCallResult(){
 	open_id = document.getElementById('openID').innerHTML;
-	identify = document.getElementById('identify').innerHTML;
+	identify = document.getElementById('quizID').innerHTML;
 	$.post("http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/getRollCallResult", {action:'get_test_result', openid:open_id, identify:identify}, function(data){
 		var json = eval('(' + data + ')'); 
-		console.log(json);
 		if (json.status == 0) {
 			alert('获得点名结果失败，请稍后尝试');
 		}else{
