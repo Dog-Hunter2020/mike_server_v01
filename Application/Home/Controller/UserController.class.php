@@ -57,6 +57,21 @@ class UserController extends \Think\Controller{
 
 
     }
+    /*
+     * description:用userToken进行登录
+     * return:bool
+     *
+     * 获取的userTokenId会通过cookie传到客户端
+     *
+     */
+
+    public function  login($userToken){
+
+        $token=new \UserToken($userToken);
+
+        \Cookie::sendCookie("tokenId",$token->tokenId);
+
+    }
 
 
     /*

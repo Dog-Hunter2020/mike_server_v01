@@ -23,7 +23,28 @@ class UserToken
     public $schoolAccountPassword;
     public $ifBindSchoolAccount;
 
-    public function __construct(){
+    public function __construct($userTokenInfo){
+
+
+        $this->state=$userTokenInfo['state'];
+        $this->isGetCode=$userTokenInfo['isGetCode'];
+        $this->ipAddress=$userTokenInfo['ipAddress'];
+        $this->name=$userTokenInfo['name'];
+        $this->userId=$userTokenInfo['userId'];
+        $this->password=$userTokenInfo['password'];
+        $this->phoneNumber=$userTokenInfo['phoneNumber'];
+        $this->schoolAccount=$userTokenInfo['schoolAccount'];
+        $this->schoolAccountPassword=$userTokenInfo['schoolAccountPassword'];
+        $this->ifBindSchoolAccount=$userTokenInfo['ifBindSchoolAccount'];
+        $this->createdTime=time();
+        $this->generateTokenId();
+
+    }
+
+    public function generateTokenId(){
+
+        $this->tokenId=sha1($this->createdTime.$this->name);
+
 
     }
 

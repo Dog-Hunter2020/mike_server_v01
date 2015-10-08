@@ -59,21 +59,21 @@ class Token{
 
     function  addToken($userToken){
 
-        $this->tokenList[$userToken->name]=$userToken;
+        $this->tokenList[$userToken->tokenId]=$userToken;
 
 
     }
 
-    function setUserTokenByName($name,$key,$value){
+    function setUserTokenByTokenId($tokenId,$key,$value){
 
-        $userToken=$this->tokenList[$name];
+        $userToken=$this->tokenList[$tokenId];
         $userToken[$key]=$value;
 
     }
 
-    function deleteTokenByName($name){
+    function deleteTokenByTokenId($tokenId){
 
-        unset($this->tokenList[$name]);
+        unset($this->tokenList[$tokenId]);
 
     }
 
