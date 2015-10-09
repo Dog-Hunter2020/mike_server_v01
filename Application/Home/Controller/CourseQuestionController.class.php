@@ -6,7 +6,12 @@
 
 namespace Home\Controller;
 use Think\Controller;
+use Home\Controller\CoursePostController;
 class CourseQuestionController extends \Think\Controller{
+    private $ClassQuestionModel = null;
+    public  function __construct(){
+        $this->ClassQuestionModel = M('class_question');
+    }
     /*
      * description:老师布置新的问题
      * return:bool
@@ -22,12 +27,13 @@ class CourseQuestionController extends \Think\Controller{
         $data['user_id'] = $userId;
         $data['course_id'] = $courseId;
         $data['survive_time'] = $surviveTime;
-        $data['time'] = NOW_TIME;
+        $data['time'] = date('Y-m-d H:i:s',time());
         $ClassQuestionModel->add($data);
+        $this->ajaxReturn($data,'JSON');
     }
 
-    public function deleteQuestion($userId,$questionId){
-
+    public function deleteQuestion($questionId){
+        $this->ClassQuestionModel->delete($questionId);
     }
     /*
      * description:获取某个人的课程
@@ -35,7 +41,9 @@ class CourseQuestionController extends \Think\Controller{
      */
 
     public function getQuestionBelongTo($userId){
-
+        $condition['user_id'] = $userId;
+        $classQuestionData = $this->ClassQuestionModel->where($condition)->select();
+        $this->ajaxReturn($classQuestionData,'JSON');
     }
 
     /*
@@ -56,7 +64,19 @@ class CourseQuestionController extends \Think\Controller{
      * lefttime 剩余时间，以毫秒作为单位
      */
     public function getCurrentQuestions($courseId){
-
+        $result = array();
+        $condition['course_id'] = $courseId;
+        $classQuestionData = $this->ClassQuestionModel->where($condition)->select();
+        $now = time();
+        foreach($classQuestionData as $classQuestion){
+            $publishTime = $classQuestion['time'];
+            $lastingTime = $now - strtotime($publishTime);
+            $left_time = $classQuestion['survive_time'] - $lastingTime*1000;
+            if($left_time >= 0){
+                $result[] = array('content' => $classQuestion['content'],'question_id' => $classQuestion['id'], 'author_id' => $classQuestion['user_id'], 'survive_time' => $classQuestion['survive_time'], 'time' => $classQuestion['time'],'left_time' => $left_time);
+            }
+        }
+        $this->ajaxReturn($result,'JSON');
     }
     /*
      * description:获取问题的当前统计信息
@@ -75,7 +95,16 @@ class CourseQuestionController extends \Think\Controller{
      *
      */
     public function  getQuestionAnswers($questionId){
-
+        $QuestionAnswerModel = M('question_answer');
+        $condition['question_id'] = $questionId;
+        $questionAnswerData = $QuestionAnswerModel->where($condition)->select();
+        for($i=0;$i<count($questionAnswerData);$i++){
+            $userId = $questionAnswerData[$i]['user_id'];
+            $userData = CoursePostController::getUserDataById($userId);
+            $questionAnswerData[$i]['user_name'] = $userData['name'];
+            $questionAnswerData[$i]['icon_url'] = $userData['icon_url'];
+        }
+        $this->ajaxReturn($questionAnswerData,'JSON');
     }
 
     /*
@@ -85,14 +114,42 @@ class CourseQuestionController extends \Think\Controller{
      * question的定义参见getCurrentQuestion方法
      */
     public function getHistoryQuestions($courseId){
-
+        $result = array();
+        $condition['course_id'] = $courseId;
+        $classQuestionData = $this->ClassQuestionModel->where($condition)->select();
+        $now = time();
+        foreach($classQuestionData as $classQuestion){
+            $publishTime = $classQuestion['time'];
+            $lastingTime = $now - strtotime($publishTime);
+            $left_time = $classQuestion['survive_time'] - $lastingTime*1000;
+            if($left_time < 0){
+                $result[] = array('content' => $classQuestion['content'],'question_id' => $classQuestion['id'], 'author_id' => $classQuestion['user_id'], 'survive_time' => $classQuestion['survive_time'], 'time' => $classQuestion['time']);
+            }
+        }
+        $this->ajaxReturn($result,'JSON');
     }
     /*
      * description:某个用户回答某个问题
      * return:bool
      */
 
-    public function  answerQuestions($questionId,$studentId, $studentName, $answer){
+    public function  answerQuestions($questionId,$studentId,$answer){
+        //判断question有没有过期
+        $now = time();
+        $questionData = $this->ClassQuestionModel->find($questionId);
+        $publishTime = $questionData['time'];
+        $lastingTime = $now - strtotime($publishTime);
+        if( $questionData['survive_time'] >= $lastingTime*1000){
+            $QuestionAnswerModel = D('question_answer');
+            $data['user_id'] = $studentId;
+            $data['question_id'] = $questionId;
+            $data['answer'] = $answer;
+            $QuestionAnswerModel->add($data);
+            $this->ajaxReturn(array('result' => 1),'JSON');
+        }else{
+            $this->ajaxReturn(array('result' => 0),'JSON');
+        }
+
 
     }
 

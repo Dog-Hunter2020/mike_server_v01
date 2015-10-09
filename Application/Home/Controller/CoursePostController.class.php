@@ -30,7 +30,7 @@ class CoursePostController extends \Think\Controller{
         $this->ajaxReturn($postData,'JSON');
 
     }
-    private function getUserDataById($userId = 0){
+    public static function getUserDataById($userId = 0){
         $UserModel = M('user');
         $userData = $UserModel->find($userId);
         return $userData;
