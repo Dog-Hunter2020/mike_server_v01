@@ -52,10 +52,23 @@ class CourseController extends \Think\Controller{
      *return: bool
      *
      */
-    public function setCourseInfo($courseId,$changes){
-
-
-
+    public function setCourseInfo(){
+        $courseId = $_POST['course_id'];
+        $changes = $_POST['changes'];
+        $data = array();
+        foreach($changes as $key=>$value){
+            if($key === 'semester' || $key === 'grade' || $key === 'time_place'){
+                $data[$key]=$value;
+            }
+        }
+        if(count(array_keys($data)) > 0){
+            $data['id'] = $courseId;
+            $CourseModel = M('course');
+            $CourseModel->save($data);
+        }
+        $this->ajaxReturn($_POST,'JSON');
+//        $arr=json_decode($_POST['changes'],true);
+//        echo $arr;
     }
     /*
      * description:利用课程信息进行模糊查询
@@ -119,12 +132,27 @@ class CourseController extends \Think\Controller{
     /*
      * description:获取以startId为开始id，number个的课程数目
      * return array(array())
-     *
+     * 用index会加快访问速度且数据处理更加简单
      */
 
-    public function getCourseInfoRange($startId,$number){
-
+    public function getCourseInfoRange($index,$number){
+        $result=array();
 //        assert($startId>0&&$number>0,"startId or number error");
+        $CourseModel = new Model();
+        $CoursesData = $CourseModel->query("select * from course LIMIT %d,%d",array($index,$number));
+        $FormCourseInfo = M('course_info');
+        for($i=0;$i<count($CoursesData);$i++){
+            $courseInfoData = $FormCourseInfo->find($CoursesData[$i]['course_info_id']);
+            $courseInfoData['course_id'] = $CoursesData[$i]['id'];
+            $courseInfoData['semester'] = $CoursesData[$i]['semester'];
+            $courseInfoData['grade'] = $CoursesData[$i]['grade'];
+            $courseInfoData['time_place'] = $CoursesData[$i]['time_place'];
+
+            $courseInfoData = $this->raryCourseInfo($courseInfoData);
+            $result[] = $courseInfoData;
+
+        }
+        $this->ajaxReturn($result,'JSON');
 
     }
     /*
