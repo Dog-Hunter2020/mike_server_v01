@@ -21,7 +21,10 @@ class CourseController extends \Think\Controller{
     public function getCourseDetail($courseId=0){
 
 //        assert($courseId>0,"courseId error!");
-
+        $courseInfoData = $this->getCourseInfoById($courseId);
+        $this->ajaxReturn($courseInfoData,'JSON');
+    }
+    private function getCourseInfoById($courseId=0){
         $FormCourse = M('course');
         $courseData = $FormCourse->find($courseId);
 
@@ -34,8 +37,7 @@ class CourseController extends \Think\Controller{
         $courseInfoData['time_place'] = $courseData['time_place'];
 
         $courseInfoData = $this->raryCourseInfo($courseInfoData);
-
-        $this->ajaxReturn($courseInfoData,'JSON');
+        return $courseInfoData;
     }
     private function raryCourseInfo($courseInfo){
         $FormRary = M('course_rary');
@@ -168,9 +170,6 @@ class CourseController extends \Think\Controller{
      */
 
     public function deleteCourse($id){
-
-
-
         $FormCourseRary = M('course_rary');
         $condition['course_id'] = $id;
         $FormCourseRary->where($condition)->delete();
@@ -195,7 +194,40 @@ class CourseController extends \Think\Controller{
      *
      */
 
-    public function  getMyCourseBriefInfos($studenId){
+    public function  getMyCourseBriefInfos($userId){
+        $results = array();
+        $UserCourseRelationModel = M('user_course_relation');
+        $condition['user_id'] = $userId;
+        $userCourseRelations = $UserCourseRelationModel->where($condition)->select();
+        for($i=0;$i<count($userCourseRelations);$i++){
+            $results[] = $this->getBriefCourseInfoByCourseId($userCourseRelations[$i]['course_id']);
+        }
+        $this->ajaxReturn($results,'JSON');
+    }
+
+    private function getBriefCourseInfoByCourseId($courseId=0){
+        $result = array();
+        $courseInfo = $this->getCourseInfoById($courseId);
+        $result['course_id'] = $courseInfo['course_id'];
+        $result['course_name'] = $courseInfo['name'];
+        $result['course_type'] = $courseInfo['platform'];
+        $result['icon_url'] = $courseInfo['icon_url'];
+        //get department name
+        $departmentData = $this->getDepartmentDataById($courseInfo['department_id']);
+        $result['department_name'] = $departmentData['name'];
+        //get teachers name
+        $result['teachers'] = $this->getTeachersByCourseId($courseInfo['course_id']);
+        return $result;
+    }
+    private function getTeachersByCourseId($courseId=0){
+        $UserCourseModel = new Model();
+        $teachersData = $UserCourseModel->query("select t1.`name`, t1.id from `user` AS t1, user_course_relation as t2 where t1.id = t2.user_id and t2.course_id= %d and t2.`right` =2",array($courseId));
+        return $teachersData;
+    }
+    private function getDepartmentDataById($id=0){
+        $departmentModel = M('department');
+        $departmentData = $departmentModel->find($id);
+        return $departmentData;
 
     }
 
@@ -210,8 +242,15 @@ class CourseController extends \Think\Controller{
      *courseId(String)	courseName(String)	academyName(String)	courseType(String)	teacherName(String)	courseImageUrl(String)
      *
      */
-    public function  getAllCourses($schoolId,$beginPosition, $num){
-
+    public function  getAllCourses($schoolId,$index, $num){
+        //假设school_id 不会变
+        $results = array();
+        $CourseInfoModel = new Model();
+        $courseIdsData = $CourseInfoModel->query("select t1.id from course as t1, course_info as t2 where t1.course_info_id = t2.id and t2.school_id = %d LIMIT %d,%d",array($schoolId,$index,$num));
+        foreach($courseIdsData as $courseId){
+            $results[] = $this->getBriefCourseInfoByCourseId($courseId['id']);
+        }
+        $this->ajaxReturn($results,'JSON');
     }
 
     /*

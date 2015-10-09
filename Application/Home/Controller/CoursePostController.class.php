@@ -6,6 +6,8 @@
 
 namespace Home\Controller;
 use Think\Controller;
+use Think\Model;
+
 class CoursePostController extends \Think\Controller{
 
     /*
@@ -18,8 +20,20 @@ class CoursePostController extends \Think\Controller{
      * String postId,String userId,String authorName,String title,String content,int praise,int viewNum,String date,Strig userIcon
      */
 
-    public function  getCoursePosts($courseId, $beginPos, $num){
+    public function  getCoursePosts($courseId, $index, $num){
+        $PostModel = new Model();
+        $postData = $PostModel->query("select * from post where course_id = %d ORDER BY id DESC LIMIT %d,%d",array($courseId,$index,$num));
+        for($i = 0;$i<count($postData);$i++){
+            $userData = $this->getUserDataById($postData[$i]['user_id']);
+            $postData[$i]['authorName'] = $userData['name'];
+        }
+        $this->ajaxReturn($postData,'JSON');
 
+    }
+    private function getUserDataById($userId = 0){
+        $UserModel = M('user');
+        $userData = $UserModel->find($userId);
+        return $userData;
     }
 
 }

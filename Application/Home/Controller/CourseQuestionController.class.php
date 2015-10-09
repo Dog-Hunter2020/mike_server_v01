@@ -14,12 +14,16 @@ class CourseQuestionController extends \Think\Controller{
      * courseId(String), authorId(String), questionType(QuestionType), content(String), beginTime(long), lastTime(long)
      *
      * questionType:SingleChoiceQuestion|MultiChoiceQuestion|OtherQuestion
-     *
+     * class_question 加一列 user_id
      */
-    public function signQuestion($userId,$questionDetail,$courseId){
-
-        assert($questionDetail!=null,"question cannot be null!");
-
+    public function signQuestion($userId,$content,$courseId,$surviveTime){
+        $ClassQuestionModel = D('class_question');
+        $data['content'] = $content;
+        $data['user_id'] = $userId;
+        $data['course_id'] = $courseId;
+        $data['survive_time'] = $surviveTime;
+        $data['time'] = NOW_TIME;
+        $ClassQuestionModel->add($data);
     }
 
     public function deleteQuestion($userId,$questionId){
