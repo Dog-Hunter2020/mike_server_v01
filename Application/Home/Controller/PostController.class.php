@@ -15,7 +15,7 @@ class PostController extends Controller{
     /*
      * description:添加新的问题
      * return:bool|new post`s id
-     * postInfo:array()
+     * postInfo:json array()
      * String postId,String userId,String authorName,String title,String content,int praise,int viewNum,String date,String userIcon
      * 当$courseId为0说明在校内发的贴
      */
@@ -23,6 +23,9 @@ class PostController extends Controller{
     //todo userIcon无用，authorName无用，reply_to缺少
     public function postNewQuestion($userId,$postInfo,$courseId=0){
         assert($postInfo!=null,"post info can not be null!");
+
+        $postInfo=json_decode($postInfo,true);
+
         $postModel=M('post');
 
         $data['id']=$postInfo['postId'];
@@ -40,10 +43,13 @@ class PostController extends Controller{
     }
 
     private function formatPostFromClientToDb($post){
-        $post['id']=$post['postId'];
-        $post['timestamp']=$post['date'];
-        $post['watch_count']=$post['viewNum'];
-        $post['like_count']=$post['praise'];
+        $result['id']=$post['postId'];
+        $result['timestamp']=$post['date'];
+        $result['watch_count']=$post['viewNum'];
+        $result['like_count']=$post['praise'];
+        $result['title']=$post['title'];
+        $result['content']=$post['content'];
+        return $result;
     }
     /*
      * description:根据id精确删除post
@@ -83,6 +89,11 @@ class PostController extends Controller{
                 }
                 break;
             default:
+                if($postModel->where(array('id'=>$postId))->save($this->formatPostFromClientToDb($postInfo))>=0){
+                    $this->ajaxReturn(true);
+                }else{
+                    $this->ajaxReturn(false);
+                }
                 break;
         }
 
@@ -95,7 +106,9 @@ class PostController extends Controller{
      *
      */
     //todo 推送设备号
-    public function invitateUserToAnswer($senderId,$questionId,$userIdList){
+    public function inviteUserToAnswer($senderId,$questionId,$userIdList){
+        $userIdList=json_decode($userIdList,true);
+
         $messagePusher=\Home\Controller\Tools\MessagePush::getInstance();
         $tokenMaker=new \Common\Extend\Interact\UserTokenMaker();
         $idsStr=$tokenMaker->makeDeviceTokens($userIdList);
@@ -172,7 +185,7 @@ class PostController extends Controller{
     */
     public function getNewestPost($courseId,$startId,$number){
         $postModel=M('post');
-        $postArray=$postModel->where("course_id=%d and id>%d",$courseId,$startId)->order('timestamp')->select();
+        $postArray=$postModel->where("course_id=%d and id>%d",$courseId,$startId)->order('timestamp')->limit($number)->select();
         foreach($postArray as $k=>$value){
             $postArray[$k]=$this->formatPostFromDbToClient($postArray[$k]);
         }
