@@ -191,7 +191,8 @@ CREATE TABLE `question_answer` (
 
 CREATE TABLE `school` (
   `school_id` int(11) NOT NULL,
-  `name` char(30) NOT NULL
+  `name` char(30) NOT NULL,
+  `number` INT(11) NOT NULL COMMENT '学校编号'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -214,7 +215,8 @@ CREATE TABLE `user` (
   `identify` char(30) NOT NULL,
   `password` char(50) NOT NULL,
   `signal` text,
-  `school_account_psd` varchar(60) NOT NULL
+  `school_account_psd` varchar(60) NOT NULL,
+  `background_icon_url` VARCHAR(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

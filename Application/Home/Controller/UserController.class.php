@@ -36,8 +36,8 @@ class UserController extends \Think\Controller{
      * return: array()
      *
      *String name,String icon,array() schoolInfo,array() departmentInfo,
-     * String nick_name,St ring identify,String gender,
-     * String grade,String sign,String background_i con_path,
+     * String nick_name,String identify,String gender,
+     * String grade,String sign,String background_icon_path,
      * String id
      *
      * 其中
@@ -46,14 +46,32 @@ class UserController extends \Think\Controller{
      *
      *
      */
+    private function formatUserInfo($userInfo){
+        $userInfo['icon']=$userInfo['icon_url'];
+        $userInfo['background_icon_path']=$userInfo['background_icon_url'];
+        return $userInfo;
+    }
+
+    private function formatDepartmentInfo($departmentInfo){
+        $departmentInfo['schooId']=$departmentInfo['school_id'];
+        $departmentInfo['number']=$departmentInfo['department_num'];
+        return $departmentInfo;
+    }
+
     public function getUser($id){
 
+        $userModel=M('user');
+        $userInfo=$userModel->where(array('id'=>$id))->find();
+        $schoolModel=M('school');
+        $schoolInfo=$schoolModel->where(array('id'=>$userInfo['school_id']))->find();
+        $departmentModel=M('deparment');
+        $departmentInfo=$departmentModel->where(array('id'=>$userInfo['department_id']))->find();
 
-        $userInfo=$this->userModel->getUser($id);
+        $userInfo['schoolInfo']=$schoolInfo;
+        $userInfo['departmentInfo']=$this->formatDepartmentInfo($departmentInfo);
+        $userInfo=$this->formatUserInfo($userInfo);
 
-
-
-        return json_encode($userInfo);
+        $this->ajaxReturn($userInfo,'JSON');
 
 
     }
@@ -90,7 +108,7 @@ class UserController extends \Think\Controller{
      *
      *String name,String icon,String schoolName,String departmentName,
      * String nick_name,String identify,String gender,
-     * String grade,String sign,String background_i con_path,
+     * String grade,String sign,String background_icon_path,
      * String id,String schoolaccount,String schoolAccountPsd
      *
      */

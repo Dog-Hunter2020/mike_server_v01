@@ -8,11 +8,92 @@
  *
  */
 namespace Home\Model;
-use Think\Model;
+use Think\Model\RelationModel;
 
-class UserModel extends Model
+class UserModel extends RelationModel
 {
 
+    protected $table_name='user';
+
+    protected $_link = array(
+//
+//                        'Profile'=>array(
+//
+//                        'mapping_type'=>HAS_ONE,
+//
+//                        'mapping_name'=>'Profile',
+//
+//                        'class_name'=>'Profile',
+//
+//                        'foreign_key'=>'user_id',
+//
+//                        ),
+//
+                        'School'=> array(
+
+                        'mapping_type'=> self::BELONGS_TO,
+
+                        'mapping_name'=>'School',
+
+                        'class_name'=>'School',
+
+                        'foreign_key'=>'school_id',
+
+                        ),
+
+                        'Department'=> array(
+
+                            'mapping_type'=> self::BELONGS_TO,
+
+                            'mapping_name'=>'Department',
+
+                            'class_name'=>'Department',
+
+                            'foreign_key'=>'department_id',
+
+                        ),
+
+                        'Major'=> array(
+
+                            'mapping_type'=> self::BELONGS_TO,
+
+                            'mapping_name'=>'Major',
+
+                            'class_name'=>'Major',
+
+                            'foreign_key'=>'major_id',
+
+                        ),
+//
+//                        'Card'=> array(
+//
+//                        'mapping_type'=> HAS_MANY,
+//
+//                        'mapping_name'=>'Card',
+//
+//                        'class_name'=>'Card',
+//
+//                        'foreign_key'=>'user_id',
+//
+//                        ),
+
+                        'Course'=> array(
+
+                            'mapping_type'=> self::MANY_TO_MANY,
+
+                            'mapping_name'=>'Course',
+
+                            'class_name'=>'Course',
+
+                            'foreign_key'=>'user_id',
+
+                            'relation_foreign_key'=>'course_id',
+
+                            'relation_table'=>'user_course_relation',
+
+                        ),
+
+    );
 
 
     private $school;
