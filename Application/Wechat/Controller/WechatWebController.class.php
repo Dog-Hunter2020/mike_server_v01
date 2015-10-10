@@ -10,7 +10,7 @@ namespace Wechat\Controller;
 
 class WechatWebController extends WechatController{
     public function index(){
-
+        $this->getCourseList(1234);
     }
 
     private $result_array=array(
@@ -21,25 +21,42 @@ class WechatWebController extends WechatController{
     function bind($identify_id,$password,$openid,$nickname=0,$headimgurl=0,$province=0,$city=0){
 
         $wechatUserModel=M('wechat_user');
+
         $loginController=new LoginController();
         //解析为对象
         $userRelationInfo=$loginController->login($identify_id,$password);
-
         if(!$userRelationInfo['userinfo']){
             return WechatController::$FAIL;
         }
+        //测试教务网
+        $spider=new \Common\Extend\NJU\spider\NJUSpider($identify_id,$password);
+        $userinfo=$spider->getUserinfo();
+        $isTimeout=$userinfo->name;//为空则超时
 
         $userinfo=$userRelationInfo['userinfo'];
-//        print_r($users_obj);
         if($userinfo){
-            $user=$wechatUserModel->find(array('openid'=>$openid));
+            $user=$wechatUserModel->where(array('openid'=>$openid))->find();
             if($user){
-                return $wechatUserModel->where("openid=$openid")->save(array('user_id'=>$userinfo['id'],'nickname'=>$nickname,'headimgurl'=>$headimgurl,'province'=>$province,'city'=>$city));
-
+                $wechatUserModel->where(array('openid'=>$openid))->save(array('user_id'=>$userinfo['id'],'nickname'=>$nickname,'headimgurl'=>$headimgurl,'province'=>$province,'city'=>$city));
+                if(!$isTimeout){
+                    return WechatController::$JW_OVERTIME;
+                }
+                return WechatController::$SUCCESS;
             }
             //todo 暂时允许重复绑定
-            $wechatUserModel->delete(array('id'=>$userinfo['id']));
-            return $wechatUserModel->add(array('id'=>0,'openid'=>$openid,'user_id'=>$userinfo['id'],'nickname'=>$nickname,'headimgurl'=>$headimgurl,'province'=>$province,'city'=>$city));
+            $wechatUserModel->where(array('user_id'=>$userinfo['id']))->delete();
+            if($wechatUserModel->add(array('openid'=>$openid,'user_id'=>$userinfo['id'],'nickname'=>$nickname,'headimgurl'=>$headimgurl,'province'=>$province,'city'=>$city))){
+                if(!$isTimeout){
+                    return WechatController::$JW_OVERTIME;
+                }
+                return WechatController::$SUCCESS;
+            }
+
+            if(!$isTimeout){
+                return WechatController::$JW_OVERTIME;
+            }
+
+            return WechatController::$FAIL;
         }else{
             return WechatController::$FAIL;
         }
@@ -50,11 +67,11 @@ class WechatWebController extends WechatController{
     private function setQuiz($course_id,$teacher_id,$title,$content,$type,$posttime,$endtime,$identify){
         $quizModel=M('quiz');
 
-        if($quizModel->find(array('identify'=>$identify))){
+        if($quizModel->where(array('identify'=>$identify))->find()){
             return $this->result_array;
         }
 
-        $quiz_id=$quizModel->add(array('id'=>0,'course_id'=>$course_id,'teacher_id'=>$teacher_id,'title'=>$title,'content'=>$content,'type'=>$type,'posttime'=>$posttime,'endtime'=>$endtime,'identify'=>$identify));
+        $quiz_id=$quizModel->add(array('course_id'=>$course_id,'teacher_id'=>$teacher_id,'title'=>$title,'content'=>$content,'type'=>$type,'posttime'=>$posttime,'endtime'=>$endtime,'identify'=>$identify));
         $tempModel=M('quiz_temp_answer');
         //todo
         $students=$this->getUsersByCourseid($course_id);
@@ -64,10 +81,10 @@ class WechatWebController extends WechatController{
             if($student['id']==$teacher_id){
                 continue;
             }
-            $wechat_user=$wechatUserModel->find(array(),array('user_id'=>$student['id']));
+            $wechat_user=$wechatUserModel->where(array('user_id'=>$student['id']))->find();
             if($wechat_user){
-                $openid=$wechatUserModel->find(array(),array('user_id'=>$student['id']))[0]['openid'];
-                $tempModel->add(array('id'=>0,'quiz_id'=>$quiz_id,'user_id'=>$student['id'],'answer'=>'','openid'=>$openid,'quiz_title'=>$title,'quiz_content'=>$content,'quiz_type'=>$type));
+                $openid=$wechatUserModel->where(array('user_id'=>$student['id']))->find()['openid'];
+                $tempModel->add(array('quiz_id'=>$quiz_id,'user_id'=>$student['id'],'answer'=>'','openid'=>$openid,'quiz_title'=>$title,'quiz_content'=>$content,'quiz_type'=>$type));
             }else{
                 continue;
             }
@@ -76,6 +93,7 @@ class WechatWebController extends WechatController{
             $this->result_array['status']=WechatController::$SUCCESS;
 
         }
+
         return $this->result_array;
     }
 
@@ -83,7 +101,7 @@ class WechatWebController extends WechatController{
     private function endQuiz($quiz_id){
         $tempModel=M('quiz_temp_answer');
         $answerModel=M('quiz_answer');
-        $temp_answers=$tempModel->select(array('quiz_id'=>$quiz_id));
+        $temp_answers=$tempModel->where(array('quiz_id'=>$quiz_id))->select();
         //添加持久化->删除临时
         foreach($temp_answers as $k=>$v){
             $answerModel->add(array(
@@ -92,7 +110,7 @@ class WechatWebController extends WechatController{
                 'quiz_id'=>$v['quiz_id'],
                 'answer'=>$v['answer']
             ));
-            $tempModel->delete(array('id'=>$v['id']));
+            $tempModel->where(array('id'=>$v['id']))->delete();
         }
         $this->result_array['status']=1;
         return $this->result_array;
@@ -121,11 +139,11 @@ class WechatWebController extends WechatController{
         //获取题目信息
         $quizModel=M('quiz');
         //未找到
-        if(!$quizModel->find(array('id'=>$quiz_id))){
+        if(!$quizModel->where(array('id'=>$quiz_id))->find()){
             return $this->result_array;
         }
 
-        $quizInfo=$quizModel->find(array('id'=>$quiz_id));
+        $quizInfo=$quizModel->where(array('id'=>$quiz_id))->find();
 
         //获取该课程所有学生
 //         require_once(dirname(dirname(__FILE__)).'/controller/UserController2.php');
@@ -155,11 +173,11 @@ class WechatWebController extends WechatController{
 
             //判断选择该choice的人员以及数量
             $quizAnswerModel=M('quiz_answer');
-            $all_answers=$quizAnswerModel->select(array('quiz_id'=>$quiz_id));
+            $all_answers=$quizAnswerModel->where(array('quiz_id'=>$quiz_id))->select();
             $userModel=M('user');
             foreach($all_answers as $k=>$answer){
                 $user_id=$answer['user_id'];
-                $user=$userModel->find(array('id'=>$user_id));
+                $user=$userModel->where(array('id'=>$user_id))->find();
                 //删除已提交名单，生成未提交名单
                 if(!$answer['answer']){
                     $nonSubmitStudents[]=$user['name'];
@@ -188,11 +206,11 @@ class WechatWebController extends WechatController{
         }else{
             //问答题
             $quizAnswerModel=M('quiz_answer');
-            $all_answers=$quizAnswerModel->find(array('quiz_id'=>$quiz_id));
+            $all_answers=$quizAnswerModel->where(array('quiz_id'=>$quiz_id))->select();
             $userModel=M('user');
             foreach($all_answers as $k=>$answer) {
                 $user_id = $answer['user_id'];
-                $user = $userModel->find(array('id' => $user_id));
+                $user = $userModel->where(array('id' => $user_id))->find();
                 //生成未提交名单
                 if (!$answer['answer']) {
                     $nonSubmitStudents[] = $user['name'];
@@ -211,7 +229,6 @@ class WechatWebController extends WechatController{
         $user_info=$this->getUserinfoByOpenid($openid);
         $userRelationModel=D('User');
         $courses=$userRelationModel->relation(true)->find($user_info['id'])['Course'];
-
         if($user_info){
             $this->result_array['status']=1;
             $this->result_array['course_count']=sizeof($courses);
@@ -227,10 +244,10 @@ class WechatWebController extends WechatController{
         //获取题目信息
         $quizModel=M('quiz');
 
-        if(!$quizModel->find(array('id'=>$quiz_id))){
+        if(!$quizModel->where(array('id'=>$quiz_id))->find()){
             return $this->result_array;
         }
-        $quiz_info=$quizModel->find(array('id'=>$quiz_id));
+        $quiz_info=$quizModel->where(array('id'=>$quiz_id))->find();
         //如果没有找到问题
         if(!$quiz_info){
             return $this->result_array;
@@ -260,7 +277,7 @@ class WechatWebController extends WechatController{
         );
         //获取题目信息
         $quizTempModel=M('quiz_temp_answer');
-        $quizs=$quizTempModel->select(array('openid'=>$openid));
+        $quizs=$quizTempModel->where(array('openid'=>$openid))->select();
         //如果没有找到问题
         if(!$quizs){
             return $this->result_array;
@@ -289,11 +306,10 @@ class WechatWebController extends WechatController{
     function createTest($test_type,$course_id,$openid,$test_title,$option_count,$test_duration,$test_content,$identify){
         $wechatModel=M('wechat_user');
 
-        if(!$wechatModel->find(array('openid'=>$openid))){
+        if(!$wechatModel->where(array('openid'=>$openid))->find()){
             return $this->result_array;
         }
-        $user=$wechatModel->find(array('openid'=>$openid));
-
+        $user=$wechatModel->where(array('openid'=>$openid))->find();
         $posttime=time();
         $endtime=$posttime+$test_duration;
 
@@ -304,10 +320,10 @@ class WechatWebController extends WechatController{
 
     function getTestResult($openid,$identify){
         $quizModel=M('quiz');
-        if(!$quizModel->find(array('identify'=>$identify))){
+        if(!$quizModel->where(array('identify'=>$identify))->find()){
             return $this->result_array;
         }
-        $quiz=$quizModel->find(array('identify'=>$identify))[0];
+        $quiz=$quizModel->where(array('identify'=>$identify))->find();
         if(!$quiz){
             return $this->result_array;
         }
@@ -318,11 +334,11 @@ class WechatWebController extends WechatController{
     function submitTest($test_id,$submit_content,$openid){
         $quizTempModel=M('quiz_temp_answer');
 
-        if(!$quizTempModel->find(array('quiz_id'=>$test_id,'openid'=>$openid))){
+        if(!$quizTempModel->where(array('quiz_id'=>$test_id,'openid'=>$openid))->find()){
             return $this->result_array;
         }
 
-        $quiz=$quizTempModel->find(array('quiz_id'=>$test_id,'openid'=>$openid));
+        $quiz=$quizTempModel->where(array('quiz_id'=>$test_id,'openid'=>$openid))->find();
         $result=$this->setAnswer($quiz['id'],$submit_content);
         if($result){
             $this->result_array['status']=1;
@@ -332,10 +348,10 @@ class WechatWebController extends WechatController{
 
     function endTest($identify){
         $quizModel=M('quiz');
-        if(!$quizModel->find(array('identify'=>$identify))){
+        if(!$quizModel->where(array('identify'=>$identify))->find()){
             return $this->result_array;
         }
-        $quiz_info=$quizModel->find(array('identify'=>$identify));
+        $quiz_info=$quizModel->where(array('identify'=>$identify))->find();
         if($quiz_info){
             return $this->endQuiz($quiz_info['id']);
         }else{
@@ -343,16 +359,20 @@ class WechatWebController extends WechatController{
         }
     }
 
+    function endTestById($quiz_id){
+        $this->endQuiz($quiz_id);
+    }
+
     //1为小测开启,-1为关闭
     function isTestOn($openid,$identify){
         $this->clearResultArray();
         $quizModel=M('quiz');
-        if(!$quizModel->find("identify=$identify")){
+        if(!$quizModel->where(array('identify'=>$identify))->find()){
             return $this->result_array;
         }
-        $quiz_id=$quizModel->find(array('identify'=>$identify))['id'];
+        $quiz_id=$quizModel->where(array('identify'=>$identify))->find()['id'];
         $quizTempModel=M('quiz_temp_answer');
-        if($quizTempModel->find(array('quiz_id'=>$quiz_id))){
+        if($quizTempModel->where(array('quiz_id'=>$quiz_id))->find()){
             $result=array();
             $result['status']=1;
             return $result;
@@ -409,7 +429,7 @@ class WechatWebController extends WechatController{
         }
         //获取课程信息
         $courseModel=M('course');
-        $course=$courseModel->find(array('id'=>$course_id));
+        $course=$courseModel->where(array('id'=>$course_id))->find();
         if($course){
             $course_name=$course['name'];
         }
@@ -418,7 +438,7 @@ class WechatWebController extends WechatController{
         $announceController=new AnnounceController();
         $result=$announceController->announce($user_id,$course_id,$content);
         //群发
-        $wechat_api=new \Wechat\Common\Extend\wechatCallbackapiTest();
+        $wechat_api=new \Wechat\Common\Extend\WechatCallbackapiTest();
         $wechat_api->sendMessages($openids,$course_name,$userinfo['name'],$content);
 
         return $result;
@@ -430,18 +450,18 @@ class WechatWebController extends WechatController{
             return $this->result_array;
         }
         $user_id=$userinfo['id'];
-        $announceRelationModel=D('Notice');
-        return $announceRelationModel->getUserNoticeList($user_id);
+        $announceController=new AnnounceController();
+        return $announceController->get_user_announce_list($user_id);
     }
 //--------
     //判断小测是否超时，如果超时就清空临时表,1为超时，-1为未超时，0失败
     function judgeTest($identify){
         $quizModel=M('quiz');
-        $quiz=$quizModel->find(array('identify'=>$identify));
+        $quiz=$quizModel->where(array('identify'=>$identify))->find();
         if(!$quiz){
             return WechatController::$ERROR;
         }
-        $quiz_id=$quiz[0]['id'];
+        $quiz_id=$quiz['id'];
 
         switch($this->isTestOvertime($quiz_id)){
             case WechatController::$NOTOVERTIME:
@@ -462,11 +482,10 @@ class WechatWebController extends WechatController{
     //判断学生是否已经提交小测,1为提交,-1为未提交
     function isSubmitted($openid,$quiz_id){
         $tempModel=M('quiz_temp_answer');
-        $quiz=$tempModel->find(array('quiz_id'=>$quiz_id,'openid'=>$openid));
+        $quiz=$tempModel->where(array('quiz_id'=>$quiz_id,'openid'=>$openid))->find();
         if(!$quiz){
             return $this->result_array;
         }
-        $quiz=$quiz[0];
         $answer=$quiz['answer'];
         if($answer){
             $this->result_array['status']=WechatController::$SUBMITTED;
@@ -481,6 +500,5 @@ class WechatWebController extends WechatController{
             'status'=>0
         );
     }
-
 
 }

@@ -48,8 +48,7 @@ class LoginController extends CommonController{
         $courseController=new CourseController();
         for($i=0;$i<$length;$i++) {
             //todo 添加课程的筛选条件待测试
-            $coursesIndb=$courseModel->select(array("course_id"=>$courseArray[$i]["course_id"]));
-
+            $coursesIndb=$courseModel->where(array("course_id"=>$courseArray[$i]["course_id"]))->select();
             //删除找到的结果中不符合条件的课
             foreach($coursesIndb as $k=>$v){
                 if(!$courseController->isTheSameClassByTimePlace($courseArray[$i]['time_place'],$v['time_place'])){
@@ -70,6 +69,7 @@ class LoginController extends CommonController{
                 }
 
             }
+            $coursesIndb=array_values($coursesIndb);
 
             if(!$coursesIndb){
 
@@ -80,10 +80,10 @@ class LoginController extends CommonController{
 
                 $time_place=$courseArray[$i]['time_place'];
                 $teacher=$courseArray[$i]['teacher'];
-                $teacher_id=$userModel->find(array(),array("user_name"=>$teacher));
+                $teacher_id=$userModel->where(array("user_name"=>$teacher))->find();
                 if($teacher_id){
 
-                    $teacher_id=$teacher_id[0]['id'];
+                    $teacher_id=$teacher_id['id'];
                 }
                 else{
                     $teacher_id=-1;
@@ -103,7 +103,7 @@ class LoginController extends CommonController{
             if($result['identify']==1){
                 $root=1;
             }
-            if(!$relationModel->find(array(),array('user_id'=>$user_id,'course_id'=>$k))){
+            if(!$relationModel->where(array('user_id'=>$user_id,'course_id'=>$k))->find()){
                 $relationModel->add(array('user_id'=>$user_id,'course_id'=>$k,'root'=>$root));
             }
         }
@@ -119,13 +119,13 @@ class LoginController extends CommonController{
         $courseController=new CourseController();
         if($identify_id==C('TEST_USERNAME') and $password==C('TEST_PASSWORD')){
             $status->status=1;
-            $status->userinfo=$userModel->where("identify_id=$identify_id")->find();
+            $status->userinfo=$userModel->where(array('identify_id'=>$identify_id))->find();
             $status->courses=array();
             return $status->encode();
         }
 //echo 'hello';
 
-        $rs=$userModel->find(array("identify_id"=>$identify_id));
+        $rs=$userModel->where(array("identify_id"=>$identify_id))->find();
 
         //当没有找到相关用户
         if($rs==false){
@@ -146,15 +146,15 @@ class LoginController extends CommonController{
                     return $status->encode();
                 }else{
                     //更新密码
-                    $userModel->where("identify_id=$identify_id")->save(array('password'=>sha1(trim($password))));
+                    $userModel->where(array('identify_id'=>$identify_id))->save(array('password'=>sha1(trim($password))));
 
                     //重新导入课程
                     $courseController->importCourse($rs['id'],$identify_id,$password);
 
-                    $user=$userModel->find("identify_id=$identify_id");
+                    $user=$userModel->where(array('identify_id'=>$identify_id))->find();
 
                     $courses=$userRelationModel->relation(true)->find($user['id'])['Course'];
-                    $userinfo=$userModel->where("identify_id=$identify_id")->find();
+                    $userinfo=$userModel->where(array('identify_id'=>$identify_id))->find();
                     $status->status=1;
                     $status->courses=$courses;
                     $status->userinfo=$userinfo;
@@ -166,9 +166,9 @@ class LoginController extends CommonController{
                 //密码正确
                 //重新导入课程
                 $courseController->importCourse($rs['id'],$identify_id,$password);
-                $user=$userModel->find("identify_id=$identify_id");
+                $user=$userModel->where(array('identify_id'=>$identify_id))->find();
                 $courses=$userRelationModel->relation(true)->find($user['id'])['Course'];
-                $userinfo=$userModel->where("identify_id=$identify_id")->find();
+                $userinfo=$userModel->where(array('identify_id'=>$identify_id))->find();
                 $status->status=1;
                 $status->courses=$courses;
                 $status->userinfo=$userinfo;

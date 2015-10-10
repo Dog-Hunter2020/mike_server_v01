@@ -11,8 +11,11 @@ class CurlSpider{
     //访问的网址，post的数据，发送的cookie，是否需要存取返回的头信息中的cookie，http头中的reffer值
     public function curl_request($url,$post='',$cookie='', $returnCookie=0,$reffer='')
     {
+        $headers['CLIENT-IP'] = '202.108.22.5';
+        $headers['X-FORWARDED-FOR'] = '202.108.22.5';
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl,CURLOPT_HTTPHEADER,$headers);//伪装ip
         curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)');
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
 //        curl_setopt($curl, CURLOPT_AUTOREFERER, 1);

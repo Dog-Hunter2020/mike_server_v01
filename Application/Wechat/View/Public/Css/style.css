@@ -115,4 +115,7 @@ div.x_ing img {
 .width-inherit {
 	width: inherit;
 	text-align: left;
+	font-size: 2em;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	filter: alpha(opacity=0);
 }

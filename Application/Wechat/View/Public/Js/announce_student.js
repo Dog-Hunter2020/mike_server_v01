@@ -6,7 +6,11 @@ function initAnnounceList(){
 		// console.log(data);
 		var json = eval('(' + data + ')'); 
 		if(json.status == 0){
-			alert('获取公告失败！');
+			//alert('获取公告失败！');
+            document.write("<h3 style='text-align: left;margin-top: 20px'>获取失败</h3><br>" +
+                            "<div style='margin-top: 5px;'>您可以确认一下您是否已绑定教务网账号，并检查一下当前网络是否畅通</div><br>" +
+                            "<div style='margin-top: 5px;'>请您稍后再试</div><br>" +
+                            "<div style='margin-top: 5px;'>对于给您带来的不便我们深表歉意</div>");
 			return;
 		}
 

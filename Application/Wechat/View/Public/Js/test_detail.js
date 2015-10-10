@@ -36,7 +36,8 @@ function getTestDetail(){
 			var option = eval('(' + json_result.test_content + ')');
 			for (var i = 0; i < optionLength; i++) {
 				var temp= String.fromCharCode(97+i);
-				detailStr += "<p><input name='Radio' type='radio' value='" + String.fromCharCode(97+i) + "' id='" + i + "' />" + String.fromCharCode(65+i) + ":" + option[String.fromCharCode(97+i)] + "</p>";
+				detailStr += "<div class='check_box'> <div class='radio'> <label><input type='radio' name='radio' value='" 
+				+ String.fromCharCode(97+i) + "' id='" + i + "' />"+ String.fromCharCode(65+i) + ":" + option[String.fromCharCode(97+i)] + "<i></i></label> </div></div>" +"<br>";
 			};
 			break;
 

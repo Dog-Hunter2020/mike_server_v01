@@ -11,12 +11,26 @@ namespace Wechat\Controller;
 
 class WechatDesktopController extends WechatController{
     private  $TOKEN_INVALID=0;
+    public $teststr='test';
+    public function index(){
+        $openid=I('openID');
+        print_r($this->getRole($openid));
+        echo '<br>';
+        print_r($this->getCountTest($openid));
+        echo '<br>';
+        print_r($this->getTest($openid));
+        echo '<br>';
+        print_r($this->isCountExist($openid));
+        echo '<br>';
+        print_r($this->isTestExist($openid));
+
+    }
     //------------------------------------------
     //判断小测是否超时
     //判断小测是否超时，如果超时就清空临时表,1为超时，-1为未超时，0失败
     private function judgeTest($quiz_id){
         $quizModel=M('quiz');
-        $quiz=$quizModel->find(array('id'=>$quiz_id));
+        $quiz=$quizModel->where(array('id'=>$quiz_id))->find();
         if(!$quiz){
             return WechatController::$ERROR;
         }
@@ -37,10 +51,6 @@ class WechatDesktopController extends WechatController{
         }
 
     }
-
-    public function index(){
-        print_r($this->getRole(1234));
-    }
     //------------------------------------------------------------
     //返回token和时间(从1970年算起的时间)
     //设置Token
@@ -53,11 +63,10 @@ class WechatDesktopController extends WechatController{
     function getToken(){
         $tokenModel=M('token');
         $now=time();
-        $row=$tokenModel->find(array('id'=>1));
+        $row=$tokenModel->where(array('id'=>1))->find();
         if(!$row){
             return $this->TOKEN_INVALID;
         }
-        $row=$row[0];
         $fetchtime=$row['fetch_time'];
         $sencends=$now-$this->mysqlToTime($fetchtime);
         if($sencends>=7200){
@@ -71,7 +80,7 @@ class WechatDesktopController extends WechatController{
     //------------------------------------------------------------
     function setToken($token,$time){
         $tokenModel=M('token');
-        if($tokenModel->find(array('id'=>1))){
+        if($tokenModel->where(array('id'=>1))->find()){
             $tokenModel->where('id=1')->save(array('token'=>$token,'fetch_time'=>$this->timeToMysql($time)));
         }else{
             $tokenModel->add(array('id'=>0,'token'=>$token,'fetch_time'=>$this->timeToMysql($time)));
@@ -93,7 +102,7 @@ class WechatDesktopController extends WechatController{
     //------------------------------------------------------------
     function isTestExist($openID){
         $tempModel=M('quiz_temp_answer');
-        $quizs=$tempModel->select(array('openid'=>$openID));
+        $quizs=$tempModel->where(array('openid'=>"$openID"))->select();
         //过滤点名以及超时的小测
         foreach($quizs as $k=>$v){
             //判断是否超时
@@ -106,6 +115,7 @@ class WechatDesktopController extends WechatController{
                 unset($quizs[$k]);
             }
         }
+        $quizs=array_values($quizs);
         if($quizs){
             return 1;
         }else{
@@ -117,7 +127,7 @@ class WechatDesktopController extends WechatController{
     //------------------------------------------------------------
     function getTest($openID){
         $tempModel=M('quiz_temp_answer');
-        $quizs=$tempModel->select(array('openid'=>$openID));
+        $quizs=$tempModel->where(array('openid'=>"$openID"))->select();
         $quizModel=M('quiz');
         $result=array();
         foreach($quizs as $key=>$value){
@@ -125,7 +135,7 @@ class WechatDesktopController extends WechatController{
             if($value['quiz_type']==WechatController::$QUIZ_TYPE_COUNT){
                 continue;
             }
-            $course_id=$quizModel->find(array('course_id'),array('id'=>$value['quiz_id']))[0]['course_id'];
+            $course_id=$quizModel->where(array('id'=>$value['quiz_id']))->find()['course_id'];
             if(!$course_id){
                 $course_id=0;//如果未找到
             }
@@ -143,7 +153,7 @@ class WechatDesktopController extends WechatController{
     //------------------------------------------------------------
     function isCountExist($openID){
         $tempModel=M('quiz_temp_answer');
-        $quiz=$tempModel->select(array('openid'=>$openID,'quiz_type'=>WechatController::$QUIZ_TYPE_COUNT));
+        $quiz=$tempModel->where(array('openid'=>"$openID",'quiz_type'=>WechatController::$QUIZ_TYPE_COUNT))->select();
         //判断是否超时
         foreach($quiz as $key=>$value) {
             $isOverTime = $this->judgeTest($value['quiz_id']);
@@ -151,6 +161,7 @@ class WechatDesktopController extends WechatController{
                 unset($quiz[$key]);
             }
         }
+
         if($quiz){
             return 1;
         }else{
@@ -161,7 +172,7 @@ class WechatDesktopController extends WechatController{
     //------------------------------------------------------------
     function getCountTest($openID){
         $tempModel=M('quiz_temp_answer');
-        $quizs=$tempModel->find(array(),array('openid'=>$openID,'quiz_type'=>WechatController::$QUIZ_TYPE_COUNT));
+        $quizs=$tempModel->where(array('openid'=>"$openID",'quiz_type'=>WechatController::$QUIZ_TYPE_COUNT))->select();
         $result=array();
         foreach($quizs as $key=>$value){
             $result[]=array(

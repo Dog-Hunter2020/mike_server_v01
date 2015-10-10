@@ -1,6 +1,7 @@
 <?php
 namespace Wechat\Controller;
 use Think\Controller;
+
 //控制微信页面的跳转
 class IndexController extends Controller {
 	private $wechatWebController;
@@ -16,8 +17,11 @@ class IndexController extends Controller {
 
     private $END_PAGE_TYPE_NAME='type_name';
 
-    private $TEST='小测';
-    private $COUNT='点名';
+    private $ACTION_TEST='小测';
+    private $ACTION_COUNT='点名';
+    private $ACTION_BIND='绑定';
+    private $ACTION_SIGN='签到';
+    private $ACTION_SUBMIT='提交';
 
 
     private $teacherCreateTestUrl,$teacherTestOnUrl,$teacherTestResultUrl;
@@ -27,12 +31,23 @@ class IndexController extends Controller {
     private $keyIdentify='random';
 
     public function index(){
-//        $this->sucess('已成功提交~');
-//        $this->error('操作失败，请稍候再试~');
-        $wechatUserModel=M('user');
-//        $this->error('操作失败，请稍候再试~');
-        print_r($wechatUserModel->find());
+//        $spider=new \Common\Extend\NJU\spider\NJUSpider('131250043','19941026');
+//        print_r($spider->getUserinfo());
+//        $this->register();
+//        $wechatUserModel=M('wechat_user');
+//        echo $wechatUserModel->where(array('user_id'=>4))->delete();
     }
+
+
+    public function wechatAPI(){
+        $wechatObj = new \Wechat\Common\Extend\WechatCallbackapiTest();
+        if(isset($_GET["echostr"])){
+            $wechatObj->valid();
+        }else{
+            $wechatObj->responseMsg();
+        }
+    }
+
 
 	public function _initialize(){
         $this->wechatWebController=new WechatWebController();
@@ -43,9 +58,7 @@ class IndexController extends Controller {
     	//判断小测是否进行中
     	    $openid=I($this->keyOpenId);
             $identify=I($this->keyIdentify);
-
             $this->wechatWebController=new WechatWebController();
-
             $this->wechatWebController->judgeTest($identify);
     		$testStatus=$this->wechatWebController->isTestOn($openid,$identify);
             switch($testStatus['status']){
@@ -74,7 +87,8 @@ class IndexController extends Controller {
         $testStatus=$this->wechatWebController->isTestOvertime($quizid);
         switch($testStatus){
             case $this->TEST_OVERTIME:
-                $this->assign($this->END_PAGE_TYPE_NAME,$this->TEST);
+                $this->wechatWebController->endTestById($quizid);
+                $this->assign($this->END_PAGE_TYPE_NAME,$this->ACTION_TEST);
                 $this->showEndPage();
                 break;
             case $this->TEST_NOTOVERTIME:
@@ -125,15 +139,19 @@ class IndexController extends Controller {
         $this->wechatWebController=new WechatWebController();
         $submitStatus=$this->wechatWebController->isSubmitted($openid,$quizid);
         $testStatus=$this->wechatWebController->isTestOvertime($quizid);
+
         switch($testStatus){
             case $this->TEST_OVERTIME:
-                $this->assign($this->END_PAGE_TYPE_NAME,$this->COUNT);
+                $this->wechatWebController->endTestById($quizid);
+                $this->assign($this->END_PAGE_TYPE_NAME,$this->ACTION_COUNT);
                 $this->showEndPage();
 //                $this->show("<h style='text-align: center;margin-top: 10px'>点名已结束</h>");
                 break;
             case $this->TEST_NOTOVERTIME:
                 if($submitStatus['status']==$this->SUBMITTED){
-                    $this->show("<h style='text-align: center;margin-top: 10px'>已成功签到</h>");
+                    $this->assign('action',$this->ACTION_SIGN);
+                    $this->showSuccessPage();
+//                    $this->show("<h1 style='text-align: center;margin-top: 20px'>已成功签到</h1>");
                     break;
                 }elseif($submitStatus['status']=$this->UNSUBMITTED){
                     $this->rollCallDetail($openid,$quizid);
@@ -158,6 +176,26 @@ class IndexController extends Controller {
         $this->announceStudent($openid);
     }
 
+
+    public function bind(){
+        $openid=I($this->keyOpenId);
+        $this->toBindPage($openid);
+    }
+
+    public function register(){
+        $this->wechatWebController=new WechatWebController();
+        $bindStatus=$this->wechatWebController->bind(I('identify_id'),I('password'),I($this->keyOpenId));
+        if($bindStatus==WechatController::$SUCCESS){
+            $this->assign('action',$this->ACTION_BIND);
+            $this->showSuccessPage();
+        }elseif($bindStatus==WechatController::$JW_OVERTIME){
+            $this->error('不好意思，教务网好像崩溃了，请稍后再试~');
+        }else{
+            $this->error('绑定失败，请确认您的账号和密码是否正确~');
+//            $this->show("<h1 style='text-align: center;margin-top: 10px'>绑定失败</h1>");
+        }
+    }
+
     public function announceSingleForStudent(){
         $courseName=I('course_name');
         $teacherName=I('teacher_name');
@@ -167,14 +205,15 @@ class IndexController extends Controller {
     }
 
 
-    public function html1(){
-        $this->display("/teacher_test_result");
-        $str =  $_GET['test'];
-        $this->display("/".$str);
-        // echo $str;
-    }
+	public function html(){
+		$str = I('html');
+		$this->display('/'.$str);
+	}
+	
+	
+
 //    这里是只需要跳转页面且需要传递参数的函数
-    public function bind($openID){
+    public function toBindPage($openID){
         $this->assign('openID',$openID);
         $this->display('/bind');
     }
@@ -183,8 +222,14 @@ class IndexController extends Controller {
         $this->display('/end_page');
     }
 
+    public function showSuccessPage(){
+        $this->display('/success_page');
+    }
+
     public function studentTestSubmitted(){
-        $this->show("<h style='text-align: center;margin-top: 10px'>已提交答案</h>");
+        $this->assign('action',$this->ACTION_SUBMIT);
+        $this->showSuccessPage();
+//        $this->show("<h1 style='text-align: center;margin-top: 20px'>已提交答案</h1>");
     }
 
     public function createTest($openID, $identify){
@@ -217,13 +262,10 @@ class IndexController extends Controller {
         $this->display('/radio_test');
     }
 
-    public function testDetail($openid,$quizid){
+    public function testDetail($openID,$quizid){
 //      学生跳转到小测详情
-        $result=array(
-            $this->keyOpenId=>$openid,
-            $this->keyQuizId=>$quizid
-        );
-        $this->assign($result);
+        $this->assign('openID',$openID);
+        $this->assign('quizID',$quizid);
         $this->display('/test_detail');
     }
 
@@ -238,14 +280,14 @@ class IndexController extends Controller {
 //        老师开始创建点名
         $this->assign('openID',$openID);
         $this->assign('quizID',$identify);
-        $this->display('roll_call_teacher');
+        $this->display('/roll_call_teacher');
     }
 
     public function rollCallResult($openID, $identify){
 //        查看点名结果
         $this->assign('openID',$openID);
         $this->assign('quizID',$identify);
-        $this->display('roll_call_result');
+        $this->display('/roll_call_result');
     }
 
     public function rollCallDetail($openID, $quizID){
@@ -318,7 +360,7 @@ class IndexController extends Controller {
     public function getTestDetail(){
 //        学生获得小测详情，传入小测id
         $this->wechatWebController=new WechatWebController();
-        print_r(json_encode($this->wechatWebController->getTestResult($_POST['openid'],$_POST['identify'])));
+        print_r(json_encode($this->wechatWebController->getTest($_POST['openid'],$_POST['quiz_id'])));
 
     }
 
@@ -374,8 +416,11 @@ class IndexController extends Controller {
     public function getAnnounces(){
 //        学生获得最近公告
         $this->wechatWebController=new WechatWebController();
-        print_r($this->wechatWebController->getAnnounce($_POST['openid']));
-
+        $result=$this->wechatWebController->getAnnounce($_POST['openid']);
+        print_r(json_encode($result));
+//        if($result['status']==0){
+//            $this->error('获取失败，请确认您是否已绑定教务网账号~');
+//        }
     }
 
 //    获取数据函数End

@@ -2,29 +2,17 @@
 /**
  * Created by PhpStorm.
  * User: gaoyang
- * Date: 15/10/6
- * Time: 下午1:00
+ * Date: 15/10/8
+ * Time: 下午5:10
  */
-namespace Wechat\Common\Extend;
-//error_reporting(0);
-define("TOKEN", "weixin");
-define("appid","wx30c17fc4302642cf");
-define("appsecret","229bdcf6a8783f443c8db7060b63ed05");
-define("teacherURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/testForTeacher");
-define("studentTestURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/testForStudent");
-define("studentCountURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/countForStudent");
-define("teacherCountURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/countForTeacher");
-define("bindURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/bind");
-define("indexURL","http://mp.weixin.qq.com/s?__biz=MzIzMDA2OTU5OQ==&mid=211605137&idx=1&sn=54c0a1014cf78c14ee1a3f00cebcb846#rd");
-define("announceTeacherURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/announceForTeacher");
-define("announceStudentURL","http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/announceForStudent");
-define('announceStudentPushURL','http://112.124.101.41/mike_server_v01/index.php/Wechat/Index/announceSingleForStudent');
-class WechatCallbackapiTest
-{
 
+namespace Wechat\Controller;
+use Think\Controller;
+
+class WechatapiController extends Controller{
     private function getAccessToken()
     {
-        $token = new \Wechat\Controller\WechatDesktopController();
+        $token = new WechatDesktopController();
         $access_token = $token->getToken();
         if(!$access_token){
             $access_token = $this->setAccessToken();
@@ -33,7 +21,7 @@ class WechatCallbackapiTest
     }
 
     private function setAccessToken(){
-        $sql = new \Wechat\Controller\WechatDesktopController();
+        $sql = new WechatDesktopController();
         $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".appid."&secret=".appsecret;
 
         $ch = curl_init();
@@ -112,10 +100,16 @@ class WechatCallbackapiTest
 							<FuncFlag>0</FuncFlag>
 							</xml>";
 
+//            if($receiveMsgType=="image" || $receiveMsgType=="voice"){
+//                $MsgType="text";
+//                $contentstr = $fromUsername;
+//                $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time,$MsgType,$contentstr);
+//                echo $resultStr;
+//            }
             if($Event=='CLICK'){
-                $sql = new \Wechat\Controller\WechatDesktopController();
-//                $content=$sql->getRole($fromUsername);
-//                $this->testStr($fromUsername,$toUsername,$content);
+                $sql = new WechatDesktopController();
+//                $content=M('wechat_user')->where(array('openid'=>$fromUsername))->find();
+//                $this->testStr($fromUsername,$toUsername,json_encode($content));
 //                return;
                 if($sql->getRole($fromUsername)==-1){
                     if($EventKey == 'V3'){
@@ -145,7 +139,7 @@ class WechatCallbackapiTest
                 }
             }
 
-            if($Event=="subscribe"){
+            if($Event=="subscribe" || !empty( $keyword ) || $receiveMsgType=="image" || $receiveMsgType=="voice"){
                 $textTpl="<xml>
                                 <ToUserName><![CDATA[%s]]></ToUserName>
                                 <FromUserName><![CDATA[%s]]></FromUserName>
@@ -165,12 +159,15 @@ class WechatCallbackapiTest
                 echo $resultStr;
             }
 
-            if(!empty( $keyword ) || $receiveMsgType=="image" || $receiveMsgType=="voice"){
-                $MsgType = "text";
-                $contentstr = "您提交的反馈已收到，我们会尽快处理";
-                $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $MsgType, $contentstr);
-                echo $resultStr;
-            }
+//            if(!empty( $keyword ))
+//            {
+//
+//                $msgType = "text";
+//                // $result = $sim->talk($keyword);
+//                $contentStr = "请点击下面三个菜单哟~";
+//                $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+//                echo $resultStr;
+//            }
 
         }else {
             echo "";
@@ -179,7 +176,7 @@ class WechatCallbackapiTest
     }
 
     private function userTest($postObj){
-        $sql = new \Wechat\Controller\WechatDesktopController();
+        $sql = new WechatDesktopController();
         $fromUsername = $postObj->FromUserName;
         $toUsername = $postObj->ToUserName;
         if($sql->getRole($fromUsername)==1){
@@ -228,7 +225,7 @@ class WechatCallbackapiTest
     }
 
     private function  userCount($postObj){
-        $sql = new \Wechat\Controller\WechatDesktopController();
+        $sql = new WechatDesktopController();
         $fromUsername = $postObj->FromUserName;
         $toUsername = $postObj->ToUserName;
         if($sql->getRole($fromUsername)==1){
@@ -302,7 +299,7 @@ class WechatCallbackapiTest
     }
 
     public function userMessages($postObj){
-        $sql = new \Wechat\Controller\WechatDesktopController();
+        $sql = new WechatDesktopController();
         $fromUsername = $postObj->FromUserName;
         $toUsername = $postObj->ToUserName;
         $time = time();
@@ -333,12 +330,13 @@ class WechatCallbackapiTest
         elseif($sql->getRole($fromUsername)==0){
             $url = announceStudentURL."?openID=$fromUsername";
             $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $title,$description,$url);
+            $this->sendMessages('sadas');
             echo $resultStr;
         }
     }
 
     private function  studentEvent($i,$postObj){
-        $sql = new \Wechat\Controller\WechatDesktopController();
+        $sql = new WechatDesktopController();
         $fromUsername = $postObj->FromUserName;
         $toUsername = $postObj->ToUserName;
         $itemTpl = "    <item>
@@ -353,7 +351,7 @@ class WechatCallbackapiTest
             foreach ($arr as $k=>$v){
                 $courseID = $v['course_id'];
                 $quizID = $v['quiz_id'];
-                $url = studentTestURL."?openID=$fromUsername&course_id=$courseID&quizID=$quizID";
+                $url = studentTestURL."?openID=$fromUsername&course_id=$courseID&quiz_id=$quizID";
                 $item_str .= sprintf($itemTpl, $v['title'],$url);
                 $countNews++;
                 if($countNews==8){
@@ -365,8 +363,8 @@ class WechatCallbackapiTest
             $arr = $sql->getCountTest($fromUsername);
             foreach ($arr as $k=>$v){
                 $quizID = $v['quiz_id'];
-                $url = studentCountURL."?openID=$fromUsername&quizID=$quizID";
-                $item_str .= sprintf($itemTpl,"点名",$url);
+                $url = studentCountURL."?openID=$fromUsername&quiz_id=$quizID";
+                $item_str .= sprintf($itemTpl, $v['title'],$url);
                 $countNews++;
                 if($countNews==8){
                     break;
@@ -420,7 +418,7 @@ class WechatCallbackapiTest
                     }';
             $url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=$token";
             $result = json_decode($this->https_post($url, $news));
-            var_dump($result);
+//            var_dump($result);
         }
     }
 
@@ -454,4 +452,5 @@ class WechatCallbackapiTest
         echo $resultStr;
     }
 
-}
+
+} 

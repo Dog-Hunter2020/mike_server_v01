@@ -14,7 +14,7 @@ class CourseController extends CommonController {
 	//$time为时间戳,course_id为课程编号，而非id
 	function findClassByTime($course_id,$time,$teacher){
 	    $courseModel=M('course');
-	    $courses=$courseModel->select(array('course_id'=>$course_id));
+	    $courses=$courseModel->where(array('course_id'=>$course_id))->select();
 	    $result=array();
 
 	    $tran=new \Common\Extend\NJUTimeTransfer();
@@ -71,36 +71,43 @@ class CourseController extends CommonController {
         $spider=new \Common\Extend\NJU\spider\NJUSpider($identify_id,$password);
         $userinfo=$spider->getUserinfo();
         $courses=$spider->getCurrentCourses();
-
         $courseArray=$spider->formatCourse($courses);
-        $length=sizeof($courseArray);
+        if(is_array($courseArray)){
+            $length=sizeof($courseArray);
+        }
+        else{
+            $length=0;
+        }
+
         $courseModel=M('course');
         $relationModel=M('user_course_relation');
         for($i=0;$i<$length;$i++) {
             //todo 添加课程的筛选条件待测试
             $course_id=$courseArray[$i]['course_id'];
-            $cc=$courseModel->select(array("course_id"=>$course_id));
-            foreach($cc as $k=>$v){
+            $coursesByCourseId=$courseModel->where(array("course_id"=>$course_id))->select();
+            foreach($coursesByCourseId as $k=>$v){
 
                 //教师不同则定为不同的课
                 if(!(strpos($v['teacher'],$courseArray[$i]["teacher"])>=0)){
-                    unset($cc[$k]);
+                    unset($coursesByCourseId[$k]);
                     continue;
                 }
 
                 if(!$this->isTheSameClassByTimePlace($courseArray[$i]['time_place'],$v['time_place'])){
 
-                    unset($cc[$k]);
+                    unset($coursesByCourseId[$k]);
                 }
             }
+            $coursesByCourseId=array_values($coursesByCourseId);
 
-            if(!$cc){
+            if(!$coursesByCourseId){
 
                 $k = $courseModel->add($courseArray[$i]);
+                echo $k;
                 //说明是新课，需要添加地点和时间
             }
             else {
-                $k=$cc[0]['id'];
+                $k=$coursesByCourseId[0]['id'];
             }
             $root=0;
             //如果是老师则root为1
@@ -108,7 +115,7 @@ class CourseController extends CommonController {
                 $root=1;
             }
 
-            if(!$relationModel->find(array('user_id'=>$user_id,'course_id'=>$k))){
+            if(!$relationModel->where(array('user_id'=>$user_id,'course_id'=>$k))->find()){
                 $relationModel->add(array('user_id'=>$user_id,'course_id'=>$k,'root'=>$root));
             }
         }

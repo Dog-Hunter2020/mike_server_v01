@@ -22,7 +22,8 @@ function initCourseList(){
 				var temp = time_place.split("||");
 				var time_places = " ";
 				for (var j = 0; j < temp.length; j++) {
-					time_places += temp[j].substring(0,temp[j].indexOf('节')+1);
+                    time_places +=" ";
+                    time_places += temp[j].substring(0,temp[j].indexOf('节')+1);
 				};
 				courses += "<option value='" + courseList[i].id + "'>" + courseList[i].name + time_places + "</option>";
 				if (i == 0) {

@@ -1,7 +1,7 @@
 <?php
 namespace Common\Extend\NJU\spider;
 
-error_reporting(0);
+//error_reporting(0);
 /**
  * Created by PhpStorm.
  * User: gaoyang
@@ -58,6 +58,23 @@ class NJUCouseInfo{
     //授课对象
     public $object;
 
+    public function __construct(){
+        $this->name=0;
+        $this->class_name=0;
+        $this->credit=0;
+        $this->department=0;
+        $this->description=0;
+        $this->faculty=0;
+        $this->grade=0;
+        $this->nature=0;
+        $this->number=0;
+        $this->object=0;
+        $this->period=0;
+        $this->squre=0;
+        $this->teacher=0;
+        $this->teaching_content=0;
+        $this->time_place=0;
+    }
 }
 
 
@@ -72,6 +89,12 @@ class NJUUserInfo{
     public $speciality;
     //身份
     public $identify;
+
+    public function __construct(){
+        $this->faculty=0;
+        $this->speciality=0;
+        $this->identify=0;
+    }
 }
 
 
@@ -81,21 +104,26 @@ class NJUSpider extends CurlSpider{
     public static $ROLE_TEACHER='教师';
     public static $ROLE_STUDENT='学生';
 
+    private $LAST_TERM=20142;
+
     private $identify_id,$password,$cookie,$postdata,$identify,$name;
     private $index_html;
     //网址的头部需要一致方可生效
-    public static $url_login="http://jwas3.nju.edu.cn:8080/jiaowu/login.do";
+    public static $url_login="http://desktop.nju.edu.cn:8080/jiaowu/login.do";
     //学生网址
-    public static $url_current_classtable = "http://jwas3.nju.edu.cn:8080/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse";
-    public static $url_all_course_test="http://jwas3.nju.edu.cn:8080/jiaowu/student/teachinginfo/allCourseList.do?method=getCourseList&curTerm=20151&curSpeciality=020&curGrade=2015";
-    public static $url_all_course_choose_page="http://jwas3.nju.edu.cn:8080/jiaowu/student/teachinginfo/allCourseList.do?method=getTermAcademy";
-    public static $url_userinfo="http://jwas3.nju.edu.cn:8080/jiaowu/student/studentinfo/studentinfo.do?method=searchAllList";
-    public static $url_allcourse_index='http://jwas3.nju.edu.cn:8080/jiaowu/student/teachinginfo/allCourseList.do?method=getTermAcademy';
+    public static $url_current_classtable = "http://desktop.nju.edu.cn:8080/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse";
+    public static $url_all_course_test="http://desktop.nju.edu.cn:8080/jiaowu/student/teachinginfo/allCourseList.do?method=getCourseList&curTerm=20151&curSpeciality=020&curGrade=2015";
+    public static $url_all_course_choose_page="http://desktop.nju.edu.cn:8080/jiaowu/student/teachinginfo/allCourseList.do?method=getTermAcademy";
+    public static $url_userinfo="http://desktop.nju.edu.cn:8080/jiaowu/student/studentinfo/studentinfo.do?method=searchAllList";
+    public static $url_allcourse_index='http://desktop.nju.edu.cn:8080/jiaowu/student/teachinginfo/allCourseList.do?method=getTermAcademy';
     //教师网址
-    public static $url_teacher_current_classtable='http://jwas3.nju.edu.cn:8080/jiaowu/teacher/courseinfo/classStudentList.do';
-    public static $url_teacher_current_classtable_request='http://jwas3.nju.edu.cn:8080/jiaowu/teacher/courseinfo/courseList.do';
+    public static $url_teacher_current_classtable='http://desktop.nju.edu.cn:8080/jiaowu/teacher/courseinfo/classStudentList.do';
+    public static $url_teacher_current_classtable_request='http://desktop.nju.edu.cn:8080/jiaowu/teacher/courseinfo/courseList.do';
     //课程网址
-    public static $url_course_detail='http://jwas3.nju.edu.cn:8080/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=00000040&classid=0';
+    public static $url_course_detail='http://desktop.nju.edu.cn:8080/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=00000040&classid=0';
+
+    private $hosts=array('jwas2','jwas3');
+
     function __construct($identify_id,$password){
         $this->identify_id=$identify_id;
         $this->password=$password;
@@ -106,14 +134,44 @@ class NJUSpider extends CurlSpider{
         $this->login();
     }
 
+
+    private function changeHost($host){
+
+       $this->url_login="http://".$host.".nju.edu.cn:8080/jiaowu/login.do";
+        //学生网址
+       $this->url_current_classtable = "http://".$host.".nju.edu.cn:8080/jiaowu/student/teachinginfo/courseList.do?method=currentTermCourse";
+       $this->url_all_course_test="http://".$host.".nju.edu.cn:8080/jiaowu/student/teachinginfo/allCourseList.do?method=getCourseList&curTerm=20151&curSpeciality=020&curGrade=2015";
+       $this->url_all_course_choose_page="http://".$host.".nju.edu.cn:8080/jiaowu/student/teachinginfo/allCourseList.do?method=getTermAcademy";
+       $this->url_userinfo="http://".$host.".nju.edu.cn:8080/jiaowu/student/studentinfo/studentinfo.do?method=searchAllList";
+       $this->url_allcourse_index='http://'.$host.'.nju.edu.cn:8080/jiaowu/student/teachinginfo/allCourseList.do?method=getTermAcademy';
+        //教师网址
+       $this->url_teacher_current_classtable='http://'.$host.'.nju.edu.cn:8080/jiaowu/teacher/courseinfo/classStudentList.do';
+       $this->url_teacher_current_classtable_request='http://'.$host.'.nju.edu.cn:8080/jiaowu/teacher/courseinfo/courseList.do';
+        //课程网址
+       $this->url_course_detail='http://'.$host.'.nju.edu.cn:8080/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber=00000040&classid=0';
+
+    }
+
     private function login(){
         $index=$this->curl_request(NJUSpider::$url_login,$this->postdata,'',1);
         $this->cookie=$index['cookie'];
         $this->index_html=$index['content'];
+
+        if(!$this->index_html){
+            foreach($this->hosts as $host){
+                $this->changeHost($host);
+                $index=$this->curl_request(NJUSpider::$url_login,$this->postdata,'',1);
+                $this->cookie=$index['cookie'];
+                $this->index_html=$index['content'];
+                if($this->index_html){
+                    break;
+                }
+            }
+        }
         //获取身份
-        $doc = new DOMDocument();
+        $doc = new \DOMDocument();
         $doc->loadHTML($index['content']);
-        $xpath = new DOMXPath($doc);
+        $xpath = new \DOMXPath($doc);
         $info=$xpath->query('//div[@id="UserInfo"]');
         $str=$info->item(0)->nodeValue;
         $str=str_replace("    当前身份", "", $str);
@@ -133,11 +191,11 @@ class NJUSpider extends CurlSpider{
 
     //加载html页面
     private function loadHtml($html){
-        $doc = new DOMDocument();
+        $doc = new \DOMDocument();
         $meta = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
         $doc->loadHTML($meta.$html);
 //      print_r($html);
-        $xpath = new DOMXPath($doc);
+        $xpath = new \DOMXPath($doc);
         return $xpath;
     }
 
@@ -149,10 +207,10 @@ class NJUSpider extends CurlSpider{
     }
 
     //写文件
-    public function writeFile($html){
-//        $f=fopen('log.txt','w');
-//        fwrite($f,$html);
-//        fclose($f);
+    private function writeFile($html){
+        $f=fopen('log.txt','w');
+        fwrite($f,$html);
+        fclose($f);
     }
 
     //清除HTML代码、空格、回车换行符
@@ -188,6 +246,22 @@ class NJUSpider extends CurlSpider{
         return trim($str);
     }
 
+    //检测表格列数
+    protected function tableSizeDetection($domxpath){
+        $table_size=10;
+
+        $theads=$domxpath->query('//table/thead/tr/td');
+        if($theads->length>0){
+            $table_size=$theads->length;
+        }
+
+        $ths=$domxpath->query('//th');
+        if($theads->length>0){
+            $table_size=$theads->length;
+        }
+
+        return $table_size;
+    }
     //获取所有院系和专业,解析网页中的js
     private function getAllDepartmentAndSpecials($html){
         $allDepatments=array();
@@ -231,9 +305,9 @@ class NJUSpider extends CurlSpider{
         $departmentList=array();
         $specialList=array();
         $html=$this->getHTML(NJUSpider::$url_login,NJUSpider::$url_allcourse_index);
-        $doc = new DOMDocument();
+        $doc = new \DOMDocument();
         $doc->loadHTML($html);
-        $xpath = new DOMXPath($doc);
+        $xpath = new \DOMXPath($doc);
         //*[@id="academySelect"]
 //        $this->writeFile($html);
         $termOptions = $xpath->query('//select[@id="termList"]/option/@value');
@@ -263,12 +337,12 @@ class NJUSpider extends CurlSpider{
 
     //合成课程详情页面
     private function echoDetailPage($courseNumber){
-        return 'http://jwas3.nju.edu.cn:8080/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber='.$courseNumber.'&classid=0';
+        return 'http://desktop.nju.edu.cn:8080/jiaowu/student/elective/courseList.do?method=getCourseInfoM&courseNumber='.$courseNumber.'&classid=0';
     }
 
     //合成全校课程页面
     private function echoAllCoursePage($term,$speId,$grade){
-        $page='http://jwas3.nju.edu.cn:8080/jiaowu/student/teachinginfo/allCourseList.do?method=getCourseList&curTerm='.$term.'&curSpeciality='.$speId.'&curGrade='.$grade;
+        $page='http://desktop.nju.edu.cn:8080/jiaowu/student/teachinginfo/allCourseList.do?method=getCourseList&curTerm='.$term.'&curSpeciality='.$speId.'&curGrade='.$grade;
         return $page;
     }
 
@@ -278,10 +352,10 @@ class NJUSpider extends CurlSpider{
         $selections=$this->getAllcoursesSelections();
         //组合学期，年级，院系三个筛选条件形成网页
         $i=0;
-
+//        $courseController=new CourseController2();
         foreach($selections['termList'] as $term){
             //只扒取当前学期
-            if($term==CommonConfig::$LAST_TERM){
+            if($term==$this->LAST_TERM){
                 return;
             }
             foreach($selections['gradeList'] as $grade){
@@ -357,9 +431,9 @@ class NJUSpider extends CurlSpider{
     //扒取课程信息
     private function allCourseHtmlToObject($html_classtable){
         $html_classtable=$this->removeWhite($html_classtable);
-        $doc = new DOMDocument();
+        $doc = new \DOMDocument();
         $doc->loadHTML($html_classtable);
-        $xpath = new DOMXPath($doc);
+        $xpath = new \DOMXPath($doc);
         $tablerows = $xpath->query('//tr[@align]/td');
         $result=array();
         $course=new NJUCouseInfo;
@@ -413,10 +487,18 @@ class NJUSpider extends CurlSpider{
     private function CurrentCourseHtmlToObject($html){
 //        $this->writeFile($html);
         $html=$this->removeWhite($html);
-        $doc = new DOMDocument();
+        $doc = new \DOMDocument();
         $doc->loadHTML($html);
-        $xpath = new DOMXPath($doc);
+        $xpath = new \DOMXPath($doc);
         $tablerows = $xpath->query('//tr[@align]/td');
+
+        $thead_size=10;
+
+        $theads=$xpath->query('//th');
+        if($theads->length>0){
+            $thead_size=$theads->length;
+        }
+
         $result=array();
         $course=new NJUCouseInfo;
         for($i=0;$i<$tablerows->length;$i++){
@@ -424,7 +506,7 @@ class NJUSpider extends CurlSpider{
 
             if($i>=2){
                 $course_content=$row->nodeValue;
-                switch($i%10){
+                switch($i%$thead_size){
                     case 2:
                         $course=new NJUCouseInfo;
                         $course->number=$course_content;
@@ -452,20 +534,27 @@ class NJUSpider extends CurlSpider{
     }
 
     private function teacherCurrentCourseHtmlToObject($html){
-      $doc = new DOMDocument();
+      $doc = new \DOMDocument();
       $html=$this->removeWhite($html);
       $meta = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
       $doc->loadHTML($meta.$html);
 //      print_r($html);
-      $xpath = new DOMXPath($doc);
+      $xpath = new \DOMXPath($doc);
       $tablerows=$xpath->query("//tbody/tr/td");
+
+        $table_size=10;
+        $theads=$xpath->query('//table/thead/tr/td');
+        if($theads->length>0){
+            $table_size=$theads->length;
+        }
+
       $result=array();
       $course=new NJUCouseInfo;
         for($i=0;$i<$tablerows->length;$i++){
             $row=$tablerows->item($i);
             $course_content=$row->nodeValue;
             $course_content=$this->removeWhite($course_content);
-            switch($i%9){
+            switch($i%$table_size){
                 case 0:
                     $course=new NJUCouseInfo;
                     $course->number=$course_content;
@@ -495,9 +584,9 @@ class NJUSpider extends CurlSpider{
 
 
     private function UserinfoHtmlToObject($html){
-        $doc = new DOMDocument();
+        $doc = new \DOMDocument();
         $doc->loadHTML($html);
-        $xpath = new DOMXPath($doc);
+        $xpath = new \DOMXPath($doc);
         $tablerows = $xpath->query('//tr[@height]/td[@class]');
         $user=new NJUUserInfo;
         for($i=0;$i<$tablerows->length;$i++){
@@ -541,7 +630,8 @@ class NJUSpider extends CurlSpider{
 
     //返回的为课程对象数组
     public function getCurrentCourses(){
-        $result=new NJUCouseInfo();
+        $result=array();
+
         if($this->identify==NJUSpider::$ROLE_STUDENT) {
             $html=$this->getHTML(NJUSpider::$url_login,NJUSpider::$url_current_classtable);
             //TODO 如若出错返回0
@@ -618,29 +708,27 @@ class NJUSpider extends CurlSpider{
         $result['name']=$course->name;
         $result['teacher']=$course->teacher;
         $result['time_place']=$course->time_place;
-        $result['school_id']=10284;
+        $result['school_id']='南京大学';
         $result['department_id']=0;
 
         return $result;
     }
 
     function formatCourse($courseArray){
-
         $size=sizeof($courseArray);
-        $result=array(array());
+        $result=array();
         if($size<=0){
             return false;
         }
-
         for($i=0;$i<$size;$i++){
             $result[$i]=$this->formatSignalCourse($courseArray[$i]);
         }
-
         return $result;
     }
 
 
 }
+
 
 
 

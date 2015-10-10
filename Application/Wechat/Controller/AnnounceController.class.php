@@ -13,7 +13,7 @@ class AnnounceController extends CommonController{
 
     function index(){
         $model=D('Notice');
-        print_r($model->getUserNoticeList(1));
+        print_r($this->announce(3,3965,'12345'));
     }
 
     function announce($user_id,$course_id,$content){
@@ -28,7 +28,7 @@ class AnnounceController extends CommonController{
         $courseModel=M('course');
         $userModel=M('user');
         //when the course or the user is invalid
-        if(!($userModel->find(array("id"=>$user_id))&&$courseModel->find(array("id"=>$course_id)))){
+        if(!($userModel->where(array("id"=>$user_id))->find()&&$courseModel->where(array("id"=>$course_id))->find())){
             return array("status"=>3);
         }
 //TODO
@@ -38,7 +38,7 @@ class AnnounceController extends CommonController{
         $id=$noticeModel->add(array('id'=>0,'content'=>$content,'course_id'=>$course_id,'course_name'=>"",'user_id'=>$user_id,'posttime'=>date('Y-m-d H:i:s')));
         // print($id);
         if($id){
-            $name=$courseModel->find(array('id'=>$course_id))['name'];
+            $name=$courseModel->where(array('id'=>$course_id))->find()['name'];
             //公告中添加课程名
             $noticeModel->where("id=$id")->save(array('course_name'=>$name));
             //todo 推送
@@ -71,7 +71,7 @@ class AnnounceController extends CommonController{
     function delete_announce($user_id,$course_id,$a_id){
 
         $noticeModel=M('notice');
-        if($noticeModel->delete(array("course_id"=>$course_id,"id"=>$a_id,"user_id"=>$user_id))){
+        if(is_int($noticeModel->where(array("course_id"=>$course_id,"id"=>$a_id,"user_id"=>$user_id))->delete())){
 
             return array("status"=>0);
         }
@@ -84,7 +84,7 @@ class AnnounceController extends CommonController{
     function get_course_announce_list($course_id)
     {
         $noticeModel =M('notice');
-        $result = $noticeModel->find(array(), array("course_id" => $course_id));
+        $result = $noticeModel->where(array("course_id" => $course_id))->select();
         $result=$this->set_user_name($result);
         $result=$this->set_coursename($result);
         arsort($result);
@@ -101,7 +101,7 @@ class AnnounceController extends CommonController{
         $length=sizeof($result);
         $userModel=M('user');
         for($i=0;$i<$length;$i++){
-            $u_name=$userModel->find(array("id"=>$result[$i]["user_id"]));
+            $u_name=$userModel->where(array("id"=>$result[$i]["user_id"]))->find();
             $u_name=$u_name['name'];
             $result[$i]['user_name']=$u_name;
 
@@ -117,7 +117,7 @@ class AnnounceController extends CommonController{
         $length=sizeof($result);
         $courseModel=M('course');
         for($i=0;$i<$length;$i++){
-            $u_name=$courseModel->find(array("id"=>$result[$i]["course_id"]));
+            $u_name=$courseModel->where(array("id"=>$result[$i]["course_id"]))->find();
             $u_name=$u_name['name'];
             $result[$i]['name']=$u_name;
 
@@ -133,10 +133,10 @@ class AnnounceController extends CommonController{
         $result=$this->set_user_name($result);
         $result=$this->set_coursename($result);
         arsort($result);
-        if ($result) {
-            return json_encode(array("status" => 1, "announces" => $result));
-        } else {
-            return json_encode(array("status" => 0, "announces" => array()));
-        }
+//        if ($result) {
+            return array("status" => 1, "announces" => $result);
+//        } else {
+//            return array("status" => 0, "announces" => array());
+//        }
     }
 } 

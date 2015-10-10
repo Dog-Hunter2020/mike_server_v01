@@ -21,7 +21,7 @@ class UserController extends \Think\Controller{
 
 //使用自定义model
         $this->userModel=D('User');
-        $this->userSpider=new Spider();
+//        $this->userSpider=new \Common\Extend\NJU\spider\NJUSpider($identifyId,$password);
 
     }
 

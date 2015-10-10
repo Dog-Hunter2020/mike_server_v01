@@ -6,7 +6,7 @@
 	<script src="JS/jquery-1.9.1.min.js" type="text/javascript"></script>
 	<script src="JS/test_detail.js" type="text/javascript"></script>
     <link rel="stylesheet" href="CSS/bootstrap.min.css">
-	<link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/wow.css">
 </head>
 <body onload="getTestDetail()">
@@ -14,9 +14,14 @@
     <div id="quizID" style="display: none;">{$quizID}</div>
     <div id="content">
         <h3 class="left_align">小测题目:<span id="title"></span></span></h3>
+        <br>
         <form action="">
             <div class="testDetail width-inherit" id="testDetail">
-                <input type="radio" class="width-inherit">123
+                <div class="radio-btns">
+                    <div class="check_box"> <div class="radio"> <label><input type="radio" name="radio" checked="">绝对疯<i></i></label> </div></div>
+                    <br>
+                    <div class="check_box"> <div class="radio"> <label><input type="radio" name="radio">绝对<i></i></label> </div></div>
+                </div>  
             </div>
         </form>
         <button class="btn button-full" onclick="submitAnswer()">提交</button>

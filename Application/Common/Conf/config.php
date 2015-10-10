@@ -33,7 +33,8 @@ return array(
     'TABLE_USER'=>'user',
     'TABLE_USER_ATTENTION'=>'user_attention',
 
-    'DEFAULT_TIMEZONE'=>'Asia/Shanghai'
+    'DEFAULT_TIMEZONE'=>'Asia/Shanghai',
+    'CURRENT_TERM'=>20151
 
 
 

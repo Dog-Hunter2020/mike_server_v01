@@ -22,6 +22,7 @@
 		text-align: left;
 		padding-left: 5px;
 	}
+
 	
 	.keleyitable table, td, th {
 		background-color: none;
@@ -71,3 +72,89 @@
 		border-bottom: 1px solid #444;
 		color: #444;
 	}
+
+	/*--radio-btns--*/
+.radio-btns {
+  margin-top: 2em;
+}
+.radio {
+	position: relative;
+	display:inline-block;
+	margin-left:15px;
+	padding-left:22px;
+	line-height: 25px;
+	color: #404040;
+	cursor: pointer;
+	/*width: 48%;*/
+	float: left;
+}
+.radio:first-child {
+	margin-left: 0;
+	margin: 0;
+}
+.radio label{
+	margin-top: -17px;
+	font-size:1em;
+	color:#555;
+}
+.radio  input[type="radio"]{
+	position: absolute;
+	left: -9999px;
+}
+.radio i {
+  position: absolute;
+  top: -16px;
+  left: 0;
+  display: block;
+  width: 28px;
+  height: 28px;
+  outline: none;
+  border: 2px solid #BABABA;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 50%;
+  padding-left: 20px;
+}
+.radio input + i:after {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.1s;
+  -o-transition: opacity 0.1s;
+  -ms-transition: opacity 0.1s;
+  -moz-transition: opacity 0.1s;
+  -webkit-transition: opacity 0.1s;
+  content: '';
+  top: 23%;
+  left: 25%;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+.radio input:checked + i:after{
+	opacity: 1;
+}
+label.checkbox {
+	width: 28%;
+	floaT: left;
+}
+/*** normal state ***/
+.radio i {
+	transition: border-color 0.3s;
+	-o-transition: border-color 0.3s;
+	-ms-transition: border-color 0.3s;
+	-moz-transition: border-color 0.3s;
+	-webkit-transition: border-color 0.3s;
+}
+/*** checked state ***/
+.radio input + i:after {
+	background-color:#E54706;	
+	box-shadow:0px 1px 0px rgba(0, 0, 0, 0.2);
+}
+.radio input:checked + i {
+	border: 2px solid #E54706;
+	background: #fff;
+}
+/*--//radio-btns--*/
