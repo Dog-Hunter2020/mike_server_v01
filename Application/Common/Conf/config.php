@@ -15,6 +15,8 @@ return array(
 	// 'TMPL_FILE_DEPR' => '_',
     'URL_HTML_SUFFIX'=>'',//U方法尾静态后缀
 
+    'RETURN_TYPE'=>'JSON',
+    'DEFAULT_VALUE_NONE'=>0,
 
     'DEFAULT_MODULE'=> 'Wechat',
 

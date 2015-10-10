@@ -59,6 +59,8 @@ class UserController extends \Think\Controller{
     }
 
     public function getUser($id){
+//        $userModel=D('User');
+//        $userInfo=$userModel->relation(true)->where(array('id'=>$id))->find();
 
         $userModel=M('user');
         $userInfo=$userModel->where(array('id'=>$id))->find();

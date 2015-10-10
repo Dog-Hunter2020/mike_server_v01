@@ -65,15 +65,15 @@ class UserModel extends RelationModel
 
                         ),
 //
-//                        'Card'=> array(
+//                        'Post'=> array(
 //
-//                        'mapping_type'=> HAS_MANY,
+//                        'mapping_type'=> self::HAS_MANY,
 //
-//                        'mapping_name'=>'Card',
+//                        'mapping_name'=>'Post',
 //
-//                        'class_name'=>'Card',
+//                        'class_name'=>'Post',
 //
-//                        'foreign_key'=>'user_id',
+//                        'foreign_key'=>'post_id',
 //
 //                        ),
 
@@ -92,6 +92,7 @@ class UserModel extends RelationModel
                             'relation_table'=>'user_course_relation',
 
                         ),
+
 
     );
 
