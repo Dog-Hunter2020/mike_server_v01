@@ -24,11 +24,14 @@ class IndexController extends Controller {
     private $keyTestResult='test_result';
     private $keyOpenId='openID';
     private $keyQuizId='quizID';
-    private $keyIdentify='identify';
+    private $keyIdentify='random';
 
     public function index(){
 //        $this->sucess('已成功提交~');
-        $this->error('操作失败，请稍候再试~');
+//        $this->error('操作失败，请稍候再试~');
+        $wechatUserModel=M('user');
+//        $this->error('操作失败，请稍候再试~');
+        print_r($wechatUserModel->find());
     }
 
 	public function _initialize(){
@@ -40,6 +43,10 @@ class IndexController extends Controller {
     	//判断小测是否进行中
     	    $openid=I($this->keyOpenId);
             $identify=I($this->keyIdentify);
+
+            $this->wechatWebController=new WechatWebController();
+
+            $this->wechatWebController->judgeTest($identify);
     		$testStatus=$this->wechatWebController->isTestOn($openid,$identify);
             switch($testStatus['status']){
                 case $this->TEST_STATUS_CLOSED:
@@ -160,14 +167,10 @@ class IndexController extends Controller {
     }
 
 
-    public function html(){
-        $str = "" + $_GET['test'] + "";
-        $this->display("/isTesting");
-        // echo $str;
-    }
-
     public function html1(){
         $this->display("/teacher_test_result");
+        $str =  $_GET['test'];
+        $this->display("/".$str);
         // echo $str;
     }
 //    这里是只需要跳转页面且需要传递参数的函数

@@ -3,7 +3,7 @@ namespace Wechat\Controller;
 use Think\Controller;
 class WechatController extends Controller {
     public function index(){
-       print_r($this->getUsersInfoByCourse(1234,1,1));
+       print_r($this->getUserinfoByOpenid(1234));
     }
 
     public static $SUCCESS=1;

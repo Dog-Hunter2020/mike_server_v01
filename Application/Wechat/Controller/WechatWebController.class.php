@@ -188,7 +188,7 @@ class WechatWebController extends WechatController{
         }else{
             //问答题
             $quizAnswerModel=M('quiz_answer');
-            $all_answers=$quizAnswerModel->find(array(),array('quiz_id'=>$quiz_id));
+            $all_answers=$quizAnswerModel->find(array('quiz_id'=>$quiz_id));
             $userModel=M('user');
             foreach($all_answers as $k=>$answer) {
                 $user_id = $answer['user_id'];
@@ -345,8 +345,9 @@ class WechatWebController extends WechatController{
 
     //1为小测开启,-1为关闭
     function isTestOn($openid,$identify){
+        $this->clearResultArray();
         $quizModel=M('quiz');
-        if(!$quizModel->find(array('identify'=>$identify))){
+        if(!$quizModel->find("identify=$identify")){
             return $this->result_array;
         }
         $quiz_id=$quizModel->find(array('identify'=>$identify))['id'];
@@ -474,5 +475,12 @@ class WechatWebController extends WechatController{
         }
         return $this->result_array;
     }
+
+    private function clearResultArray(){
+        $this->result_array=array(
+            'status'=>0
+        );
+    }
+
 
 }

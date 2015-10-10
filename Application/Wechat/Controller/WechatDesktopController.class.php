@@ -37,6 +37,10 @@ class WechatDesktopController extends WechatController{
         }
 
     }
+
+    public function index(){
+        print_r($this->getRole(1234));
+    }
     //------------------------------------------------------------
     //返回token和时间(从1970年算起的时间)
     //设置Token
@@ -88,7 +92,7 @@ class WechatDesktopController extends WechatController{
     //根据openID返回用户角色  0表示学生  1表示老师
     //------------------------------------------------------------
     function isTestExist($openID){
-        $tempModel=M('quiz_temp_model');
+        $tempModel=M('quiz_temp_answer');
         $quizs=$tempModel->select(array('openid'=>$openID));
         //过滤点名以及超时的小测
         foreach($quizs as $k=>$v){
